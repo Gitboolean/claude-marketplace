@@ -34,7 +34,7 @@ Verify: `claude /plugin list` shows `sdlc`; `/sdlc-interview` (or any other slas
 | 04–05 | [`architecture-design`](skills/architecture-design/SKILL.md) 🚪 | `/sdlc-architecture-design` | `docs/features/<slug>/sad.md` (Arc42 + C4 L1/L2 + `target_surfaces` frontmatter) + `adr/NNNN-*.md` |
 | 05 | [`complete-sequence-diagrams`](skills/complete-sequence-diagrams/SKILL.md) | `/sdlc-complete-sequence-diagrams` | `sad.md §6` flows (generic participants, surface-gated UI legs) |
 | 07 | [`generate-data-model`](skills/generate-data-model/SKILL.md) | `/sdlc-generate-data-model` | `docs/features/<slug>/data-model.md` + **staged** `docs/features/<slug>/migrations/` (promoted by implement-tasks) |
-| 10 | [`api-forge`](skills/api-forge/SKILL.md) | `/sdlc-api-forge` | `docs/features/<slug>/contracts/openapi.yaml` (+ events.md / cli.md / public-api.md per surface) + `api-sync-report.md` |
+| 10 | [`api-forge`](skills/api-forge/SKILL.md) | `/sdlc-api-forge` | `docs/features/<slug>/contracts/openapi.yaml` (+ events.md / cli.md / public-api.md per surface) + `api-sync-report.md` (`**Verdict:**` PASS / PASS (with deferrals) / FAIL, 5-point drift checklist); bootstraps `.claude/rules/openapi.md` on the first HTTP run |
 | 13 | [`break-tasks`](skills/break-tasks/SKILL.md) | `/sdlc-break-tasks` | `docs/features/<slug>/tasks/_epic.md` + `tracker.md` + `<task>.md` + **`tasks/tasks.json`** (machine DAG) |
 | 15 | [`plan-tests`](skills/plan-tests/SKILL.md) | `/sdlc-plan-tests` | `docs/features/<slug>/test-plan.md` (surface-gated tiers; generic, no hardcoded tools) |
 | 17 | [`implement-tasks`](skills/implement-tasks/SKILL.md) | `/sdlc-implement-tasks` | committed TDD code + tests + updated `tracker.md`; promotes staged migrations |
@@ -121,7 +121,7 @@ Per-skill specifics (templates + key references):
 | `architecture-design` | `templates/{sad-template,adr-template,c4-context,c4-container,deployment}.md`; `references/{draft-generation,socratic-loop,blast-radius-heuristic,socratic-cadence,c4-mermaid-syntax,…}.md` |
 | `complete-sequence-diagrams` | `templates/seq-flow.md` (single-flow shape, embedded inline in SAD §6) |
 | `generate-data-model` | `templates/{data-model,rules-migrations-baseline}.md`; staged migrations to `docs/features/<slug>/migrations/`; reads `docs/architecture-map.md` for convention source |
-| `api-forge` | `templates/{openapi.yaml,events.md}`; `references/{cli.md,public-api.md,drift-check.md}` (per-surface contracts + drift detection) |
+| `api-forge` | `templates/{openapi.yaml,events.md,cli.md,public-api.md,rules-openapi-baseline.md}`; `references/drift-check.md` (per-surface contracts, verdict rules + 5-point drift detection, baseline `.claude/rules/openapi.md`) |
 | `break-tasks` | `templates/{_epic,tracker,task}.md`; produces `tasks/tasks.json` machine DAG |
 | `plan-tests` | `templates/test-plan.md` |
 | `implement-tasks` | reads `tasks/tasks.json`; `references/{tdd-engine,commit-format,sdlc-local,…}.md` (×8); promotes staged migrations |
