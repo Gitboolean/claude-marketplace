@@ -30,7 +30,7 @@
       "name": "baiar",
       "source": "./plugins/baiar",
       "description": "Інструменти бізнес-аналітика для Claude Code: ba-discovery — покрокове discovery-інтерв'ю зі стейкхолдером з уточненням розмитих відповідей, Discovery Summary за фіксованим шаблоном, перевірка агентом critic у чистому контексті і фіксація доменних термінів у CONTEXT.md (формат сумісний з my-toolkit). Повністю українською.",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "author": {
         "name": "Anton Pohorielov"
       },
