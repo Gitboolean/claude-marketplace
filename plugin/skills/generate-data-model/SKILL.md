@@ -58,7 +58,7 @@ Backend Lead.
 - **Gate (hard refuse if missing):**
   - `docs/features/<slug>/PRD.md` — entities live in §4 user-story acceptance criteria.
   - `docs/features/<slug>/sad.md` — §6.4 ER section provides the initial relationships.
-  - If either is missing: STOP, suggest `sdlc:write-prd <slug>` or `sdlc:architecture-design <slug>`.
+  - If either is missing: STOP, suggest `my-toolkit:write-prd <slug>` or `sdlc:architecture-design <slug>`.
 - Optional: the sequence diagrams in `sad.md §6` — each `writes/reads <entity>` note is an index candidate (one index per query, justified).
 - Optional: the domain layer (`internal/modules/<...>/domain/*` or stack-equivalent) — drift detection only.
 - **Convention source (borrowed mechanism):** `docs/architecture-map.md` (from `sdlc:map-architecture`) — read its §Migrations / persistence section to learn **where** the live `migrations/` tree lives and **which migration tool** the repo uses, instead of re-scanning from scratch. The map gives module layout + migration location; the course's DB defaults below are NOT overridden by it. For **drift detection** specifically, `explorer` still reads the **actual domain layer** (the map gives layout; drift needs the real struct/field source). Re-scan only if the map is absent or stale.

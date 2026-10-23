@@ -9,8 +9,8 @@
     {
       "name": "sdlc",
       "source": "./plugin",
-      "description": "Full Claude Code SDLC pipeline with 21 skills: a 12-stage map-architecture to ship backbone, interview ideation (feature and greenfield project modes with an easy/medium/hard depth regulator), a scaffold skill that materializes a new project from the base-tpl template with subtractive batteries, and 7 cross-cutting utilities. Includes prepare-design-spec for one repository-aware UI design spec with an embedded Definition of Done, verify-ui for live browser evidence, and user-documentation for end-user docs generated from a live app (playwright-cli walks, per-flow doc-flow subagents, screenshots and optional screencast replays). Per-feature artifacts live under docs/features/<slug>/; skills own their templates and end with explicit stage handoffs.",
-      "version": "4.6.0",
+      "description": "SDLC pipeline for Claude Code, architecture → ship (gitboolean fork): 16 skills — an architecture-to-ship backbone (map-architecture, architecture-design, complete-sequence-diagrams, generate-data-model, api-forge, break-tasks, plan-tests, implement-tasks, review-feature, ship-feature), scaffold from base-tpl, and utilities (classify-size, decide-adr, roadmap, prepare-design-spec, verify-ui, user-documentation). Ideation and PRD stages (interview, write-prd, clarify-prd, fix-term) live in the my-toolkit plugin of this marketplace — install both.",
+      "version": "5.0.0",
       "author": {
         "name": "Kyrylo Genkov"
       },

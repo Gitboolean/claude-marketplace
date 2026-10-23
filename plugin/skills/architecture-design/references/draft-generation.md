@@ -23,7 +23,7 @@ The draft is held in memory only — the on-disk `sad.md` is **not** touched bet
 ## Inputs in priority order
 
 1. **`CONTEXT.md` `## Glossary`** — canonical for role names + domain terms. If anything contradicts it (PRD, the map/scan, reference code), glossary wins.
-2. **`docs/features/<slug>/PRD.md`** — Goals (§2), Non-goals (§3), NFR (§6 incl. numeric targets + measurement sources), §6.1 Security/privacy + abuse cases, KPIs (§7), Open questions (§8), §13 Recommendation, §1 Context overrides (¶4 bullets emitted by the `sdlc:clarify-prd` / `sdlc:write-prd` critic).
+2. **`docs/features/<slug>/PRD.md`** — Goals (§2), Non-goals (§3), NFR (§6 incl. numeric targets + measurement sources), §6.1 Security/privacy + abuse cases, KPIs (§7), Open questions (§8), §13 Recommendation, §1 Context overrides (¶4 bullets emitted by the `my-toolkit:clarify-prd` / `my-toolkit:write-prd` critic).
 3. **The current-architecture source** (Step 3) — `docs/architecture-map.md` if present + fresh, else the `sdlc:explorer` scan: primary language + framework + versions; top-level module layout; ports/adapters/layering conventions; data stores; inter-module communication style; the existing design system / component library / tokens (§Frontend / UI foundation); repo-pinned constraints relevant to `<slug>`. Greenfield → null (skill notes `<!-- brownfield: N/A — greenfield repo -->` in §3 and skips repo-pattern citations).
 4. **Earlier-section in-memory decisions** — §4 surface + strategic choices constrain §5/§6/§7/§8; §5 module boundaries constrain §6 flows; §10 quality scenarios reference §1 quality goals. The skill must read its own in-memory draft when drafting later sections (no re-reading the file).
 
@@ -96,7 +96,7 @@ The item-banks below are guidance — the skill picks how many items to draft ba
   - **Severity column** accepts literal `Open question` value for OQ rows (in addition to Low/Medium/High for regular risks). Never N/A.
 
 - **§12 Glossary.**
-  - Auto-extract from CONTEXT.md glossary terms that appear in sad.md body + add domain terms surfaced during the Step 6 Socratic that aren't in CONTEXT (flag those for a `sdlc:fix-term` follow-up after the pass).
+  - Auto-extract from CONTEXT.md glossary terms that appear in sad.md body + add domain terms surfaced during the Step 6 Socratic that aren't in CONTEXT (flag those for a `my-toolkit:fix-term` follow-up after the pass).
 
 ## Cadence (size-aware) — architecture-design's question budget
 

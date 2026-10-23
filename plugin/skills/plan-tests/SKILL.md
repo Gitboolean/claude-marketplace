@@ -11,7 +11,7 @@ description: >
   "test plan for {slug}", "how do we test {slug}", "test strategy for {slug}",
   "/sdlc-plan-tests {slug}", "план тестів для {slug}", "як тестувати {slug}", "тест-план".
   Output: docs/features/{slug}/test-plan.md (separate file for M+), or inline in PRD.md for
-  XS/S per the size matrix. Hard-refuse if PRD.md is missing → run `/sdlc-write-prd {slug}` first.
+  XS/S per the size matrix. Hard-refuse if PRD.md is missing → run `/my-toolkit:write-prd {slug}` first.
 triggers:
   - /sdlc-plan-tests
 stage: "15"
@@ -30,7 +30,7 @@ QA + the engineer who will implement the feature (co-authors). QA drives the lev
 ## Inputs
 
 - `<slug>` — the same feature slug every earlier stage used.
-- **Gate (hard-refuse if missing):** `docs/features/<slug>/PRD.md`. Its §5 acceptance criteria are the entire reason this plan exists — each one must map to a test. If `PRD.md` is absent → STOP and point: «run `/sdlc-write-prd <slug>` first — the test plan maps its §5 acceptance criteria to tests».
+- **Gate (hard-refuse if missing):** `docs/features/<slug>/PRD.md`. Its §5 acceptance criteria are the entire reason this plan exists — each one must map to a test. If `PRD.md` is absent → STOP and point: «run `/my-toolkit:write-prd <slug>` first — the test plan maps its §5 acceptance criteria to tests».
 - (Optional) `docs/features/<slug>/data-model.md` — the entity shapes tell you what test data to build and what to seed/clean per suite. Read it if present.
 - (Optional) `docs/features/<slug>/sad.md` §6 sequence diagrams — each drawn flow is an e2e candidate; each cross-participant boundary is a contract-test candidate.
 - (Optional) `docs/features/<slug>/.size` — depth hint. Absent → default to M (separate `test-plan.md` file).

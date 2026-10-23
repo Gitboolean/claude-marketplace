@@ -77,9 +77,9 @@ Rules for filling it:
 
 | Stage | Review before continuing (files written) | Run next |
 |---|---|---|
-| `map-architecture` | `docs/architecture-map.md` (+ scaffold `tasks.json` on greenfield) | `/sdlc-write-prd <slug>` |
-| `write-prd` | `docs/features/<slug>/PRD.md` | `/sdlc-clarify-prd <slug>` |
-| `clarify-prd` | `docs/features/<slug>/PRD.md` (tightened) | `/sdlc-fix-term <slug>` ↳ or `/sdlc-architecture-design <slug>` |
+| `map-architecture` | `docs/architecture-map.md` (+ scaffold `tasks.json` on greenfield) | `/my-toolkit:write-prd <slug>` |
+| `write-prd` (my-toolkit) | `docs/features/<slug>/PRD.md` | `/my-toolkit:clarify-prd <slug>` |
+| `clarify-prd` (my-toolkit) | `docs/features/<slug>/PRD.md` (tightened) | `/my-toolkit:fix-term <slug>` ↳ or `/sdlc-architecture-design <slug>` |
 | `architecture-design` | `sad.md` (C4 §3/§5 + `target_surfaces`) + `adr/` | `/sdlc-complete-sequence-diagrams <slug>` |
 | `complete-sequence-diagrams` | `sad.md` §6 (flows) | `/sdlc-generate-data-model <slug>` |
 | `generate-data-model` | `data-model.md` + staged `migrations/` | `/sdlc-api-forge <slug>` |
@@ -89,7 +89,7 @@ Rules for filling it:
 | `implement-tasks` | the committed diff (code + tests) + `tasks/tracker.md` | `/sdlc-review-feature <slug>` |
 | `review-feature` | `_review/review-<date>.md` | `/sdlc-ship-feature <slug>` (PASS) · `/sdlc-implement-tasks <slug>` (CHANGES, no `/clear`) |
 | `ship-feature` | `CHANGELOG` + the PR | **Done** — PR command/URL; merge is your call |
-| `classify-size` | `.size` | resume — e.g. `/sdlc-write-prd <slug>` |
+| `classify-size` | `.size` | resume — e.g. `/my-toolkit:write-prd <slug>` |
 | `fix-term` | `CONTEXT.md` | resume — e.g. `/sdlc-architecture-design <slug>` |
 | `decide-adr` | `adr/NNNN-<title>.md` | resume — `/sdlc-break-tasks <slug>` or `/sdlc-plan-tests <slug>` |
 | `roadmap` | `docs/roadmap.md` | resume your backbone stage |

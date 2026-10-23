@@ -1,6 +1,6 @@
 # Interview depth — easy / medium / hard (the depth dial)
 
-> **Reference-only.** Not a skill. The Q&A skills (`write-prd`, `clarify-prd`, `architecture-design`) read this for
+> **Reference-only.** Not a skill. The Q&A skills (`architecture-design` here; `write-prd` / `clarify-prd` in `my-toolkit` keep their own Ukrainian copy) read this for
 > the canonical three levels and how each adapts. The dial tunes **how much the skill decides on
 > its own vs. interrogates you** — question volume, autonomy, which analyses run, and whether each
 > diagram is confirmed per-item or written-and-summarized. It does **not** tune *completeness*:
@@ -37,7 +37,6 @@ The opening question is also where the skill states what the level will *do* to 
 | Axis | **easy** | **medium** (default) | **hard** |
 |---|---|---|---|
 | **Question volume + autonomy** | Skill decides the reversible / low-stakes calls itself with sensible defaults; asks ONLY the irreversible / high-blast-radius / genuinely-un-inferable ones. **States every assumption it made** (an assumptions ledger) so the user can veto. | The balanced Socratic walk — one `AskUserQuestion` per real decision, trivial convention-defaults bundled. | Walks **every** decision; each question **foregrounds the trade-off** (what you gain / lose / the hidden catch); probes edge cases harder. |
-| **Ideation analyses** (`write-prd` step 3) | Skip the suite — deep-dive answers only. | `researcher` (competitive/web) + `devils-advocate`. | Full suite: `researcher` + `strategist` (3 approaches) + `analyst` (multi-perspective) + `devils-advocate`, then the Claude-proposed RICE/feasibility confirm. |
 | **Diagram confirmation** (`architecture-design` C4, `complete-sequence-diagrams` flows) | Write the diagram + a **one-line prose summary**, then proceed — no per-diagram question (per [`diagram-presentation.md`](./diagram-presentation.md)). | Prose description + `AskUserQuestion` confirm **per diagram**. | Same as medium — prose description + confirm per diagram (never raw Mermaid). |
 | **Edge-case / ambiguity probing** | Only the edges that change the blast radius. | The PRD's stated error/authz/edge criteria. | Adversarial — hunt for unstated edges, run the full `devils-advocate` pass, push on every «what if». |
 
@@ -65,8 +64,8 @@ Depth tunes **how many questions** and **how much autonomy** — never **what ge
 
 ## Per-skill adaptation (the delta each consuming skill applies)
 
-- **`write-prd`** — the level gates step 3's ideation suite (table above) and the volume of the step-2 deep-dive + step-7 Socratic validation. The §5 coverage gates (≥1 of each of the 5 AC types **and ≥1 AC per §4 user story** — the use-case floor) are **floor, not dial** — enforced at every level.
-- **`clarify-prd`** — the level gates how aggressively the self-sweep + `devils-advocate` hunt (easy: only build-divergence that changes behavior, with assumptions stated; hard: adversarial, every fork surfaced) and the per-finding question volume. Every surfaced ambiguity is still Resolved or Deferred at every level — none dangling.
+- **`write-prd`** (my-toolkit) — the level gates the volume of the step-2 deep-dive + step-7 Socratic validation. The §5 coverage gates (≥1 of each of the 5 AC types **and ≥1 AC per §4 user story** — the use-case floor) are **floor, not dial** — enforced at every level.
+- **`clarify-prd`** (my-toolkit) — the level gates how aggressively the self-sweep + `devils-advocate` hunt (easy: only build-divergence that changes behavior, with assumptions stated; hard: adversarial, every fork surfaced) and the per-finding question volume. Every surfaced ambiguity is still Resolved or Deferred at every level — none dangling.
 - **`architecture-design`** — the level gates the per-section Socratic question volume (easy: decide convention-defaults itself + ledger, ask only blast-radius decisions; hard: walk every decision, foreground each trade-off) and the C4 diagram confirmation (per [`diagram-presentation.md`](./diagram-presentation.md)). The blast-radius → ADR gate and the §11 owner+due rule are floors, enforced at every level.
 
 A consuming skill adds a one-line pointer to this file at its depth-selection step and otherwise reads the level as a parameter into its existing loop — it does not re-implement the dial.

@@ -17,18 +17,16 @@ Model is chosen by the **kind of work**, not by taste — judgment gets the stro
 | `doc-flow` | walk one user flow + write its doc (execution) | `sonnet` | `medium` | + Bash, Write, Edit |
 | `reviewer` | independent review (judgment) | `opus` | `high` | Read, Grep, Glob, Bash |
 | `critic` | coherence critique (judgment) | `opus` | `high` | Read, Grep, Glob |
-| `devils-advocate` | ambiguity hunt (judgment) | `opus` | `high` | Read, Grep, Glob |
-| `researcher` | competitive / adjacent-solution research (ideation) | `sonnet` | `medium` | Read, Grep, Glob, WebSearch, WebFetch |
-| `strategist` | generate the 3 strategic approaches (judgment) | `opus` | `high` | Read, Grep, Glob |
-| `analyst` | multi-perspective review of approaches (judgment) | `opus` | `high` | Read, Grep, Glob |
 
-Rationale: judgment quality (review, critique, ambiguity, strategy, multi-perspective synthesis) is where a stronger model pays off; execution (write code/tests to a clear spec) is well served by a balanced model and escalates only when it gets stuck; a read-only scan is cheap. The **ideation trio** (`write-prd` step 3, gated by the depth dial) follows the same logic: `researcher` is gathering-and-citing work (balanced model + web tools), while `strategist` and `analyst` are judgment (generating real alternatives, synthesizing across lenses) and get the strongest model. (Treat model-by-role as a sound principle — the headline "stronger orchestrator + cheaper workers wins by X%" claim from the multi-agent literature did not survive verification, so we lean on role-fit, not a magic ratio.)
+> The ideation agents (`researcher`, `strategist`, `analyst`, `devils-advocate`) moved to the `my-toolkit` plugin together with `interview` / `clarify-prd` — dispatched as `my-toolkit:<name>`.
+
+Rationale: judgment quality (review, critique, ambiguity, strategy, multi-perspective synthesis) is where a stronger model pays off; execution (write code/tests to a clear spec) is well served by a balanced model and escalates only when it gets stuck; a read-only scan is cheap. (Treat model-by-role as a sound principle — the headline "stronger orchestrator + cheaper workers wins by X%" claim from the multi-agent literature did not survive verification, so we lean on role-fit, not a magic ratio.)
 
 ## Dispatching (`subagent_type`)
 
 These agents are **plugin-namespaced**. Spawn each with `subagent_type: "sdlc:<name>"` — the id Claude Code registers and shows in the available-agents list — **not** the bare name and **not** an `sdlc-…` prefix:
 
-`sdlc:explorer` · `sdlc:test-author` · `sdlc:implementer` · `sdlc:refactor` · `sdlc:reviewer` · `sdlc:critic` · `sdlc:devils-advocate` · `sdlc:researcher` · `sdlc:strategist` · `sdlc:analyst` · `sdlc:doc-flow`
+`sdlc:explorer` · `sdlc:test-author` · `sdlc:implementer` · `sdlc:refactor` · `sdlc:reviewer` · `sdlc:critic` · `sdlc:doc-flow`
 
 So when a skill says «dispatch the `explorer` agent», the call is `subagent_type: "sdlc:explorer"`. If the namespaced agent isn't available at runtime, fall back to the general-purpose (or `Explore`) agent the skill names, passing the same prompt.
 

@@ -1,11 +1,12 @@
 # sdlc — Claude Code plugin
 
-20 skills + 11 plugin-namespaced agents for a full ideation → ship pipeline with Claude.
+16 skills + 7 plugin-namespaced agents for the architecture → ship part of the pipeline with Claude.
+
+> **Fork note (gitboolean).** Ideation and PRD stages — `interview`, `write-prd`, `clarify-prd`, `fix-term` and the `researcher` / `strategist` / `analyst` / `devils-advocate` agents — moved to the sibling plugin [`my-toolkit`](../plugins/my-toolkit/README.md) (Ukrainian, `my-toolkit:<name>`). Install both: `/plugin install sdlc@gitboolean` and `/plugin install my-toolkit@gitboolean`.
 
 - **12-stage backbone** — covers the entire cycle from codebase scan to merge & changelog.
-- **7 cross-cutting utilities** — called ad-hoc at any stage (classify-size, fix-term, decide-adr, roadmap, prepare-design-spec, verify-ui, user-documentation).
-- **1 ideation skill** — interview (runs researcher / strategist / analyst / devils-advocate agents).
-- **11 agents** — dispatched as `sdlc:<name>` from inside skills; model/effort policy in `skills/_shared/agent-roster.md`.
+- **6 cross-cutting utilities** — called ad-hoc at any stage (classify-size, decide-adr, roadmap, prepare-design-spec, verify-ui, user-documentation).
+- **7 agents** — dispatched as `sdlc:<name>` from inside skills; model/effort policy in `skills/_shared/agent-roster.md`.
 - **10 shared references** — `skills/_shared/` files consumed by multiple skills (surfaces, handoff, mermaid-check, depth-dial, …).
 
 Each skill is a self-contained folder under `skills/<name>/` — `SKILL.md` (protocol + DoD + anti-patterns), optional `templates/` (skeletons the skill copies into `docs/features/<slug>/`), optional `references/` (mini-guides the skill reads at specific protocol steps).
@@ -20,17 +21,16 @@ ln -s "$(pwd)/sdlc/plugin" ~/.claude/local-plugins/sdlc
 claude /plugin install ./sdlc/plugin
 ```
 
-Verify: `claude /plugin list` shows `sdlc`; `/sdlc-interview` (or any other slash-trigger below) appears in the slash menu.
+Verify: `claude /plugin list` shows `sdlc`; `/sdlc-map-architecture` (or any other slash-trigger below) appears in the slash menu.
 
 ## Skill order — full backbone (12 stages)
 
-> Each stage reads the previous stage's artefacts. The `map-architecture` scan happens **once** at the start; later stages read `docs/architecture-map.md` instead of re-scanning. Cross-cutting utilities (`fix-term`, `classify-size`, `decide-adr`, `roadmap`, `prepare-design-spec`, `verify-ui`) are called ad-hoc, not in sequence.
+> Each stage reads the previous stage's artefacts. The `map-architecture` scan happens **once** at the start; later stages read `docs/architecture-map.md` instead of re-scanning. Cross-cutting utilities (`classify-size`, `decide-adr`, `roadmap`, `prepare-design-spec`, `verify-ui`) are called ad-hoc, not in sequence.
 
 | Stage | Skill | Command | Output |
 |------:|-------|---------|--------|
 | 00 | [`map-architecture`](skills/map-architecture/SKILL.md) | `/sdlc-map-architecture` | `docs/architecture-map.md` (repo-root); greenfield → scaffold `tasks.json` |
-| 03 | [`write-prd`](skills/write-prd/SKILL.md) 🚪 | `/sdlc-write-prd` | `docs/features/<slug>/PRD.md` |
-| 03 | [`clarify-prd`](skills/clarify-prd/SKILL.md) | `/sdlc-clarify-prd` | tightens `PRD.md` in place (ambiguity sweep) |
+| 01–03 | *in `my-toolkit`:* `interview` → `write-prd` → `clarify-prd` | `/my-toolkit:<name>` | `idea-brief.md`, `PRD.md` |
 | 04–05 | [`architecture-design`](skills/architecture-design/SKILL.md) 🚪 | `/sdlc-architecture-design` | `docs/features/<slug>/sad.md` (Arc42 + C4 L1/L2 + `target_surfaces` frontmatter) + `adr/NNNN-*.md` |
 | 05 | [`complete-sequence-diagrams`](skills/complete-sequence-diagrams/SKILL.md) | `/sdlc-complete-sequence-diagrams` | `sad.md §6` flows (generic participants, surface-gated UI legs) |
 | 07 | [`generate-data-model`](skills/generate-data-model/SKILL.md) | `/sdlc-generate-data-model` | `docs/features/<slug>/data-model.md` + **staged** `docs/features/<slug>/migrations/` (promoted by implement-tasks) |
@@ -47,9 +47,7 @@ Verify: `claude /plugin list` shows `sdlc`; `/sdlc-interview` (or any other slas
 
 | Skill | Command | Output |
 |-------|---------|--------|
-| [`interview`](skills/interview/SKILL.md) | `/sdlc-interview` | `docs/features/<slug>/idea-brief.md` (ideation suite — researcher / strategist / analyst / devils-advocate) |
 | [`classify-size`](skills/classify-size/SKILL.md) | `/sdlc-classify-size` | `docs/features/<slug>/.size` (XS/S/M/L/XL; matrix in `_shared/size-matrix.md`) |
-| [`fix-term`](skills/fix-term/SKILL.md) | `/sdlc-fix-term` | `CONTEXT.md` glossary (+ multi-context `CONTEXT-MAP.md`) |
 | [`decide-adr`](skills/decide-adr/SKILL.md) 🚪 | `/sdlc-decide-adr` | standalone `adr/NNNN-*.md` (blast-radius worthiness gate, Proposed → Accepted) |
 | [`roadmap`](skills/roadmap/SKILL.md) | `/sdlc-roadmap` | `docs/roadmap.md` (Now / Next / Later / Shipped tables) |
 | [`prepare-design-spec`](skills/prepare-design-spec/SKILL.md) | `/sdlc-prepare-design-spec` | `docs/features/<slug>/design-spec.md` |
@@ -58,16 +56,12 @@ Verify: `claude /plugin list` shows `sdlc`; `/sdlc-interview` (or any other slas
 
 ## Agents
 
-11 agents are dispatched as `sdlc:<name>` from inside skills — never called directly by the user. Model/effort policy for each agent lives in [`skills/_shared/agent-roster.md`](skills/_shared/agent-roster.md).
+7 agents are dispatched as `sdlc:<name>` from inside skills — never called directly by the user. Model/effort policy for each agent lives in [`skills/_shared/agent-roster.md`](skills/_shared/agent-roster.md).
 
 | Agent | Role | Dispatched from |
 |-------|------|----------------|
 | `sdlc:explorer` | Fast codebase scan (haiku) | map-architecture |
-| `sdlc:researcher` | Source research (sonnet) | interview |
-| `sdlc:strategist` | Strategic framing (opus) | interview |
-| `sdlc:analyst` | Trade-off analysis (opus) | interview |
-| `sdlc:devils-advocate` | Adversarial stress-test (opus) | interview |
-| `sdlc:critic` | Clean-context quality review (opus) | write-prd, architecture-design, review-feature |
+| `sdlc:critic` | Clean-context quality review (opus) | architecture-design, review-feature (`my-toolkit` ships its own `critic` for write-prd) |
 | `sdlc:test-author` | Test plan generation (sonnet) | plan-tests |
 | `sdlc:implementer` | GREEN — make the red test pass (sonnet) | implement-tasks |
 | `sdlc:refactor` | REFACTOR — tidy while green, isolated (sonnet) | implement-tasks |
@@ -99,7 +93,7 @@ Verify: `claude /plugin list` shows `sdlc`; `/sdlc-interview` (or any other slas
 - **Staged migrations** — `generate-data-model` writes to `docs/features/<slug>/migrations/`; `implement-tasks` promotes them into the repo's live migrations tree (re-stamping timestamps).
 - **TDD engine** — `implement-tasks` runs SELECT → RED → GREEN → REFACTOR → GATE → COMMIT; supports sequential / agent-team / dynamic Workflow modes; commit trailers `SDLC-Task` / `SDLC-AC`.
 - **Stage-handoff blocks** — every skill ends with a handoff block (from `_shared/handoff.md`) naming the next skill and what to pass forward.
-- **Socratic loop** — shared Q&A cadence across write-prd, architecture-design, clarify-prd.
+- **Socratic loop** — shared Q&A cadence for architecture-design (my-toolkit keeps its own copy for write-prd).
 - **Critic phase** — clean-context `sdlc:critic` / `sdlc:reviewer` used in PRD, architecture, and final review to surface blind spots.
 
 ## What's inside each skill
@@ -115,9 +109,6 @@ Per-skill specifics (templates + key references):
 | Skill | Key files |
 |-------|-----------|
 | `map-architecture` | no templates — writes `docs/architecture-map.md` directly from codebase scan |
-| `interview` | `templates/idea-brief.md` (15 sections); dispatches researcher/strategist/analyst/devils-advocate |
-| `write-prd` | `templates/PRD-template.md`; `references/{draft-generation,socratic-loop,critic-phase,critic-prompt,ask-examples,checklist}.md` |
-| `clarify-prd` | `references/ambiguity-sweep.md` (tightens PRD in place, no new file) |
 | `architecture-design` | `templates/{sad-template,adr-template,c4-context,c4-container,deployment}.md`; `references/{draft-generation,socratic-loop,blast-radius-heuristic,socratic-cadence,c4-mermaid-syntax,…}.md` |
 | `complete-sequence-diagrams` | `templates/seq-flow.md` (single-flow shape, embedded inline in SAD §6) |
 | `generate-data-model` | `templates/{data-model,rules-migrations-baseline}.md`; staged migrations to `docs/features/<slug>/migrations/`; reads `docs/architecture-map.md` for convention source |
@@ -128,7 +119,6 @@ Per-skill specifics (templates + key references):
 | `review-feature` | `templates/review-template.md`; `references/review-dimensions.md` (AC trace + quality dimensions) |
 | `ship-feature` | `templates/{changelog-entry,pr-body}.md`; forge-detect (gh/glab); updates `docs/roadmap.md` |
 | `decide-adr` | no own templates — pulls canonical `../architecture-design/templates/adr-template.md` cross-skill |
-| `fix-term` | `templates/CONTEXT.md` (lazy bootstrap for the per-feature glossary) |
 | `classify-size` | no template — writes a 1-line `.size` file |
 | `roadmap` | `templates/roadmap.md` (Now/Next/Later/Shipped tables) |
 | `prepare-design-spec` | `templates/design-spec.md`; repository-aware design-entry contract |
