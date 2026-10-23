@@ -62,7 +62,7 @@ Easy не скасовує чесності чекпойнтів: його 3–4
 
 - **Артефакт:** `docs/idea-brief.md` у корені теки (без `docs/features/<slug>/`). Той самий 15-секційний шаблон; `<slug>` всюди означає назву продукту (kebab-case — стане slug-ом скафолда).
 - **Фаза 10, здійсненність:** репо ще немає — сканувати нічого. Claude чесно ставить ☑/☐ на основі відповідей про команду і стек («greenfield — оцінка від команди, не від репо») і, як завжди, питає користувача.
-- **Фаза 14, передача далі:** наступний крок не `sdlc:write-prd`, а **`sdlc:scaffold`** — матеріалізація проєкту з шаблону; бриф поїде в нове репо разом зі скафолдом. Коміт не пропонується (git-репо ще немає — його створить scaffold).
+- **Фаза 14, передача далі:** наступний крок не `my-toolkit:write-prd`, а **`sdlc:scaffold`** — матеріалізація проєкту з шаблону; бриф поїде в нове репо разом зі скафолдом. Коміт не пропонується (git-репо ще немає — його створить scaffold).
 - **CONTEXT.md / глосарій:** якщо файлу немає — відкладені терміни лишаються в §15 «Відкриті питання», fix-term не викликається.
 
 ## Робота з режимами
@@ -270,7 +270,7 @@ Claude обирає один із 3 підходів з фази 5 і пише �
 01: idea-brief for <slug>
 ```
 
-Наступні відповідальні: PM + Tech Lead → `sdlc:write-prd <slug>` (його вхідна умова — idea-brief.md зі `status: Confirmed`).
+Наступні відповідальні: PM + Tech Lead → `/my-toolkit:write-prd <slug>` (його вхідна умова — idea-brief.md зі `status: Confirmed`).
 
 **Режим greenfield:** замість write-prd наступний крок — `sdlc:scaffold` (матеріалізує проєкт із шаблону і забирає `docs/idea-brief.md` у нове репо); коміт не пропонується, git-репо створить scaffold.
 
@@ -295,7 +295,7 @@ ADR (`sdlc:architecture-design`) на етапі 1 НЕ викликається
 - Frontmatter: `status: Confirmed`, `value_score.state: confirmed`, `feasibility_state: confirmed`, `confirmed_at: <дата>`.
 - Обґрунтування рекомендації в §13 посилається на RICE (§11) + здійсненність (§12) + ≥1 клітинку матриці ролей (§8) + ≥1 прогалину конкурентів (§6).
 - **Чекпойнти `AskUserQuestion` справді спрацювали** у фазах 1, 2, 9, 10, 11 (перевір за повідомленнями користувача). Якщо хоч один вигадано → артефакт НЕ відповідає DoD.
-- Призначено відповідальних за наступний етап (PM + Tech Lead → `sdlc:write-prd`).
+- Призначено відповідальних за наступний етап (PM + Tech Lead → `my-toolkit:write-prd`).
 
 ## Антипатерни
 
@@ -346,4 +346,4 @@ ADR (`sdlc:architecture-design`) на етапі 1 НЕ викликається
 > **— Виконання (після плану) —**
 > 14. **Фаза 12** — `mkdir docs/features/rate-limiting-per-user/`, копіює шаблон, `my-toolkit:fix-term tenant`, записує idea-brief.md з усіма секціями. Frontmatter: `status: Confirmed`, `confirmed_at: 2026-05-21`.
 > 15. **Фаза 13** — самоперевірка: 15 секцій ✓, немає Postgres/Redis у тілі ✓, 4.2 сторінки ✓, посилання ✓.
-> 16. **Фаза 14** — пропонує коміт `01: idea-brief for rate-limiting-per-user` (виконує користувач). Далі: PM + Tech Lead → `sdlc:write-prd rate-limiting-per-user`.
+> 16. **Фаза 14** — пропонує коміт `01: idea-brief for rate-limiting-per-user` (виконує користувач). Далі: PM + Tech Lead → `/my-toolkit:write-prd rate-limiting-per-user`.

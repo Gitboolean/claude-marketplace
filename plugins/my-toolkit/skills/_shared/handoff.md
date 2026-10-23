@@ -67,7 +67,7 @@
 
 ## Варіанти
 
-- **Перехід уперед основним шляхом** (`interview → write-prd → … → review-feature → ship-feature`): `/clear` обов'язковий + наступний етап.
+- **Перехід уперед основним шляхом** (`interview → write-prd → clarify-prd → … → review-feature → ship-feature`): `/clear` обов'язковий + наступний етап.
 - **Повернення назад** (`review-feature → implement-tasks` при `CHANGES REQUESTED`): **без `/clear`** — ти лишаєшся в контексті,
   щоб доопрацювати; *Запусти далі* = `/sdlc-implement-tasks <slug>` (виправлення), потім повторне рев'ю зміненого.
 - **Фінал** (`ship-feature`): наступника немає. *Запусти далі* стає **Готово** — команда / URL PR
@@ -81,9 +81,9 @@
 
 | Етап | Перевір, перш ніж продовжити (записані файли) | Запусти далі |
 |---|---|---|
-| `interview` (my-toolkit) | `docs/features/<slug>/idea-brief.md` (greenfield: `docs/idea-brief.md`) | `/sdlc-write-prd <slug>` ↳ greenfield: `/sdlc-scaffold` |
-| `map-architecture` | `docs/architecture-map.md` (+ scaffold `tasks.json` для greenfield) | `/sdlc-write-prd <slug>` |
-| `write-prd` | `docs/features/<slug>/PRD.md` | `/sdlc-clarify-prd <slug>` |
+| `interview` (my-toolkit) | `docs/features/<slug>/idea-brief.md` (greenfield: `docs/idea-brief.md`) | `/my-toolkit:write-prd <slug>` ↳ greenfield: `/sdlc-scaffold` |
+| `map-architecture` | `docs/architecture-map.md` (+ scaffold `tasks.json` для greenfield) | `/my-toolkit:write-prd <slug>` |
+| `write-prd` (my-toolkit) | `docs/features/<slug>/PRD.md` + `.size` | `/sdlc-clarify-prd <slug>` |
 | `clarify-prd` | `docs/features/<slug>/PRD.md` (уточнений) | `/my-toolkit:fix-term <slug>` ↳ або `/sdlc-architecture-design <slug>` |
 | `architecture-design` | `sad.md` (C4 §3/§5 + `target_surfaces`) + `adr/` | `/sdlc-complete-sequence-diagrams <slug>` |
 | `complete-sequence-diagrams` | `sad.md` §6 (потоки) | `/sdlc-generate-data-model <slug>` |
@@ -94,7 +94,7 @@
 | `implement-tasks` | закомічений diff (код + тести) + `tasks/tracker.md` | `/sdlc-review-feature <slug>` |
 | `review-feature` | `_review/review-<date>.md` | `/sdlc-ship-feature <slug>` (PASS) · `/sdlc-implement-tasks <slug>` (CHANGES, без `/clear`) |
 | `ship-feature` | `CHANGELOG` + PR | **Готово** — команда / URL PR; мерж — твоє рішення |
-| `classify-size` | `.size` | повернись — напр. `/sdlc-write-prd <slug>` |
+| `classify-size` | `.size` | повернись — напр. `/my-toolkit:write-prd <slug>` |
 | `fix-term` (my-toolkit) | `CONTEXT.md` | повернись — напр. `/sdlc-architecture-design <slug>` |
 | `decide-adr` | `adr/NNNN-<title>.md` | повернись — `/sdlc-break-tasks <slug>` або `/sdlc-plan-tests <slug>` |
 | `roadmap` | `docs/roadmap.md` | повернись до свого основного етапу |
