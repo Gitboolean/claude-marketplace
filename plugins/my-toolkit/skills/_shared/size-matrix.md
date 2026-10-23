@@ -33,7 +33,7 @@
 |---|---|---|
 | бриф ідеї — `my-toolkit:interview` | так (easy) | так |
 | PRD — `my-toolkit:write-prd` | так | так |
-| уточнення PRD — `sdlc:clarify-prd` | легке (пропустити, якщо немає неоднозначностей) | так |
+| уточнення PRD — `my-toolkit:clarify-prd` | легке (пропустити, якщо немає неоднозначностей) | так |
 | глосарій CONTEXT.md — `my-toolkit:fix-term` | так | так |
 | SAD (Arc42, 12 §) + C4 L1/L2 — `sdlc:architecture-design` | 12 секцій пройдено, більше `<!-- N/A -->` | усі 12 заповнено |
 | ADR (у `adr/`) — `sdlc:architecture-design` / `sdlc:decide-adr` | зазвичай 2–4 | зазвичай 5–12 |

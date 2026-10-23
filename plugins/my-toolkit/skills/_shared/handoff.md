@@ -83,8 +83,8 @@
 |---|---|---|
 | `interview` (my-toolkit) | `docs/features/<slug>/idea-brief.md` (greenfield: `docs/idea-brief.md`) | `/my-toolkit:write-prd <slug>` ↳ greenfield: `/sdlc-scaffold` |
 | `map-architecture` | `docs/architecture-map.md` (+ scaffold `tasks.json` для greenfield) | `/my-toolkit:write-prd <slug>` |
-| `write-prd` (my-toolkit) | `docs/features/<slug>/PRD.md` + `.size` | `/sdlc-clarify-prd <slug>` |
-| `clarify-prd` | `docs/features/<slug>/PRD.md` (уточнений) | `/my-toolkit:fix-term <slug>` ↳ або `/sdlc-architecture-design <slug>` |
+| `write-prd` (my-toolkit) | `docs/features/<slug>/PRD.md` + `.size` | `/my-toolkit:clarify-prd <slug>` |
+| `clarify-prd` (my-toolkit) | `docs/features/<slug>/PRD.md` (уточнений) | `/my-toolkit:fix-term <slug>` ↳ або `/sdlc-architecture-design <slug>` |
 | `architecture-design` | `sad.md` (C4 §3/§5 + `target_surfaces`) + `adr/` | `/sdlc-complete-sequence-diagrams <slug>` |
 | `complete-sequence-diagrams` | `sad.md` §6 (потоки) | `/sdlc-generate-data-model <slug>` |
 | `generate-data-model` | `data-model.md` + підготовлені `migrations/` | `/sdlc-api-forge <slug>` |
