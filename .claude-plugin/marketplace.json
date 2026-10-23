@@ -1,11 +1,10 @@
 {
-  "name": "sdlc",
+  "name": "gitboolean",
   "owner": {
-    "name": "Kyrylo Genkov",
-    "email": "genkovi4@gmail.com",
-    "url": "https://github.com/genkovich"
+    "name": "Anton Pohorielov",
+    "url": "https://github.com/Gitboolean"
   },
-  "description": "SDLC toolkit for Claude Code: idea-to-ship pipeline skills, greenfield scaffold from base-tpl, UI verification, user documentation.",
+  "description": "Anton's Claude Code plugin marketplace. Includes a fork of the sdlc toolkit (upstream: github.com/genkovich/sdlc).",
   "plugins": [
     {
       "name": "sdlc",
