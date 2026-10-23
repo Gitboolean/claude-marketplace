@@ -25,6 +25,16 @@
         "name": "Anton Pohorielov"
       },
       "license": "MIT"
+    },
+    {
+      "name": "baiar",
+      "source": "./plugins/baiar",
+      "description": "Інструменти бізнес-аналітика для Claude Code: ba-discovery — покрокове discovery-інтерв'ю зі стейкхолдером з уточненням розмитих відповідей і Discovery Summary за фіксованим шаблоном. Повністю українською.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Anton Pohorielov"
+      },
+      "license": "MIT"
     }
   ]
 }

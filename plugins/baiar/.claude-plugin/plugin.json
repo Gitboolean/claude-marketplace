@@ -1,0 +1,17 @@
+{
+  "name": "baiar",
+  "version": "0.1.0",
+  "description": "Інструменти бізнес-аналітика для Claude Code: ba-discovery — покрокове discovery-інтерв'ю зі стейкхолдером з уточненням розмитих відповідей і Discovery Summary за фіксованим шаблоном. Повністю українською.",
+  "author": {
+    "name": "Anton Pohorielov",
+    "url": "https://github.com/Gitboolean"
+  },
+  "homepage": "https://github.com/Gitboolean/claude-marketplace",
+  "repository": "https://github.com/Gitboolean/claude-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "business-analysis",
+    "discovery",
+    "requirements"
+  ]
+}
