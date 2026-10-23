@@ -1,6 +1,6 @@
 {
   "name": "my-toolkit",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Мій особистий набір для Claude Code на основі sdlc: interview → write-prd → clarify-prd з fix-term і агентами researcher / strategist / analyst / devils-advocate / critic. Повністю українською.",
   "author": {
     "name": "Anton Pohorielov",
