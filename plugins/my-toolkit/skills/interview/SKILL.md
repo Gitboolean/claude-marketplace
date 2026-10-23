@@ -16,334 +16,334 @@ description: >
   "ideation for {slug}", "new project idea", "greenfield brief".
 ---
 
-# Skill: interview (SDLC ideation phase — single entry-point)
+# Скіл: interview (етап ідеації — єдина точка входу)
 
-Consolidated 14-phase ideation runner. Single entry-point for the ideation phase. Replaces the prior atomic trio `intake` + `brainstorm` + `interview` with one autonomous Claude-driven protocol. Output: a single `docs/features/<slug>/idea-brief.md` with 15 sections (≤5 pages), no separate `brainstorm.md` / `initiatives.md`.
+Ідеація в 14 фазах, зведена в один скіл. Замінює колишню трійку `intake` + `brainstorm` + `interview` одним протоколом, який веде Claude. Результат — один файл `docs/features/<slug>/idea-brief.md` з 15 секціями (до 5 сторінок), без окремих `brainstorm.md` / `initiatives.md`.
 
-## Why this consolidation
+## Навіщо зведено в один скіл
 
-Single entry-point for ideation. Replaces intake + brainstorm + interview. Autonomous Claude-driven research (competitive analysis, strategic approaches, multi-perspective review, devil's advocate, RICE/Feasibility proposals) with user confirms via AskUserQuestion. No more user-input RICE numbers («calculator game»). No more separate brainstorm.md / initiatives.md. ADR is not a gate-1 concern — it moves to gate 3 (after sad.md (architecture-design) §Trade-offs); the ideation phase stays pure product.
+Одна точка входу в ідеацію. Дослідження Claude робить сам (аналіз конкурентів, стратегічні підходи, погляд кількох ролей, devil's advocate, пропозиції RICE і здійсненності), а користувач лише підтверджує через `AskUserQuestion`. Користувач більше не вигадує числа RICE сам («гра в калькулятор»). ADR на цьому етапі не створюються — вони з'являються на етапі 3 (після §Trade-offs у sad.md від architecture-design); ідеація лишається суто продуктовою.
 
-## Owner
+## Відповідальний
 
-Idea author (PM / Eng / CTO / anyone). Tech Lead joins at multi-perspective review (phase 6) if asked.
+Автор ідеї (PM / інженер / CTO / будь-хто). Tech Lead долучається на огляді ролей (фаза 6), якщо попросять.
 
-## When to use
+## Коли використовувати
 
-- «capture an idea <slug>», «new brief for <feature>», «raw idea for <feature>».
-- «interview a feature <slug>», «ideation for <slug>», «brief for <feature>».
-- «intake feature <slug>», «start new feature with CONTEXT», «full intake for <slug>».
-- `/my-toolkit:interview <slug>` as explicit invocation.
-- **Greenfield**: user is in an empty folder (no `.git`, no `docs/`) with a new product idea — «new project idea», «бриф нового продукту». Runs project-level, see «Greenfield mode» below.
-- User drops a raw idea in prose and asks «format this per SDLC» / «run ideation for <slug>».
-- Glossary-aware: on start the skill reads `CONTEXT.md` if it exists (repo root or `docs/features/<slug>/`), keeps the glossary as session state, and triggers `my-toolkit:fix-term` inline for new domain terms.
-- Skip if `docs/features/<slug>/idea-brief.md` already exists with `status: Confirmed` and is fresh (≤2 weeks) — update it first, don't rewrite.
+- «зафіксуй ідею <slug>», «новий бриф для <фічі>», «сира ідея для <фічі>».
+- «інтерв'ю фічі <slug>», «ідеація для <slug>», «бриф для <фічі>».
+- «почни нову фічу з CONTEXT», «повний intake для <slug>».
+- `/my-toolkit:interview <slug>` — явний виклик.
+- **Greenfield**: користувач у порожній теці (без `.git`, без `docs/`) з ідеєю нового продукту — «ідея нового проєкту», «бриф нового продукту». Працює на рівні всього проєкту, див. «Режим greenfield» нижче.
+- Користувач скидає сиру ідею текстом і просить «оформи це по SDLC» / «проведи ідеацію для <slug>».
+- Скіл знає про глосарій: на старті читає `CONTEXT.md`, якщо він є (корінь репо або `docs/features/<slug>/`), тримає глосарій у стані сесії і для нових доменних термінів викликає `my-toolkit:fix-term`.
+- Не запускай, якщо `docs/features/<slug>/idea-brief.md` уже існує зі `status: Confirmed` і свіжий (≤2 тижні) — онови наявний, а не переписуй.
 
-## Inputs
+## Вхідні дані
 
-- `<slug>` — kebab-case, short (`rate-limiting`, `goals-tracking`). If the user didn't give one — suggest 2-3 options based on the idea.
-- (Optional) prior notes / links / ticket the user already has.
+- `<slug>` — kebab-case, коротко (`rate-limiting`, `goals-tracking`). Якщо користувач його не дав — запропонуй 2–3 варіанти на основі ідеї.
+- (Опційно) нотатки / посилання / тікет, які в користувача вже є.
 
-## Depth regulator (first checkpoint)
+## Регулятор глибини (перший чекпойнт)
 
-Перше AskUserQuestion кожного запуску — глибина інтерв'ю. Записується у frontmatter brief-а (`depth:`).
+Перше `AskUserQuestion` кожного запуску — глибина інтерв'ю. Записується у frontmatter брифу (`depth:`).
 
-- **easy** — 3–4 чекпойнти, швидкий прохід: Phase 1 (ідея), Phase 2 одним батчем (2–3 питання: користувач/біль · критерій успіху · скоуп), Phases 9–11 злиті в один підсумковий confirm (Claude пропонує RICE + рекомендацію разом). Phases 4–8 Claude проходить сам без sub-agents: 1–2 швидкі пошуки для §6, три approaches по одному абзацу, devil's advocate — власний список з 3–5 ризиків. Всі 15 секцій заповнюються, але компактно.
-- **medium** (default) — повний 14-фазний протокол нижче, як є.
-- **hard** — повний протокол + додатковий Socratic-батч у Phase 2 і ширший §6 (5+ конкурентів).
+- **easy** — 3–4 чекпойнти, швидкий прохід: фаза 1 (ідея), фаза 2 одним батчем (2–3 питання: користувач і біль · критерій успіху · скоуп), фази 9–11 злиті в одне підсумкове підтвердження (Claude пропонує RICE і рекомендацію разом). Фази 4–8 Claude проходить сам, без сабагентів: 1–2 швидкі пошуки для §6, три підходи по одному абзацу, devil's advocate — власний список з 3–5 ризиків. Усі 15 секцій заповнюються, але компактно.
+- **medium** (за замовчуванням) — повний 14-фазний протокол нижче, як є.
+- **hard** — повний протокол + додатковий сократівський батч у фазі 2 і ширший §6 (5+ конкурентів).
 
-Easy не скасовує чесність чекпойнтів: його 3–4 AskUserQuestion — справжні, фабрикація відповідей недопустима так само, як у medium/hard.
+Easy не скасовує чесності чекпойнтів: його 3–4 `AskUserQuestion` — справжні, вигадувати відповіді так само заборонено, як і на medium/hard.
 
-## Greenfield mode (project-level brief)
+## Режим greenfield (бриф усього проєкту)
 
-**Детект:** поточна тека порожня, або без `.git` і без `docs/` — це новий проєкт, не фіча в наявному репо. Інакше — feature mode (протокол нижче без змін).
+**Як розпізнати:** поточна тека порожня, або в ній немає ні `.git`, ні `docs/` — це новий проєкт, а не фіча в наявному репо. Інакше — режим фічі (протокол нижче без змін).
 
-Відмінності greenfield від feature mode:
+Чим greenfield відрізняється від режиму фічі:
 
 - **Артефакт:** `docs/idea-brief.md` у корені теки (без `docs/features/<slug>/`). Той самий 15-секційний шаблон; `<slug>` всюди означає назву продукту (kebab-case — стане slug-ом скафолда).
-- **Phase 10 Feasibility:** репо ще нема — сканувати нічого. Claude чесно базує ☑/☐ на відповідях про команду/стек («greenfield — оцінка від команди, не від репо») і питає користувача, як завжди.
-- **Phase 14 handoff:** наступний крок не `sdlc:write-prd`, а **`sdlc:scaffold`** — матеріалізація проєкту з темплейта; brief поїде в нове репо разом зі скафолдом. Commit не пропонується (git-репо ще не існує — його створить scaffold).
-- **CONTEXT.md / glossary:** якщо файлу нема — pending-терміни лишаються в brief §15 Open questions, fix-term не викликається.
+- **Фаза 10, здійсненність:** репо ще немає — сканувати нічого. Claude чесно ставить ☑/☐ на основі відповідей про команду і стек («greenfield — оцінка від команди, не від репо») і, як завжди, питає користувача.
+- **Фаза 14, передача далі:** наступний крок не `sdlc:write-prd`, а **`sdlc:scaffold`** — матеріалізація проєкту з шаблону; бриф поїде в нове репо разом зі скафолдом. Коміт не пропонується (git-репо ще немає — його створить scaffold).
+- **CONTEXT.md / глосарій:** якщо файлу немає — відкладені терміни лишаються в §15 «Відкриті питання», fix-term не викликається.
 
-## Mode handling
+## Робота з режимами
 
-**This skill is planning-mode-native.** Phases 0-11 виконуються повністю у read-only режимі (Read, WebSearch, Agent, AskUserQuestion). Лише на переході 11 → 12 викликається `ExitPlanMode` із synthesized planом, після чого Phase 12 копіює template і пише `idea-brief.md` на диск.
+**Скіл від початку розрахований на plan mode.** Фази 0–11 виконуються повністю в режимі лише читання (Read, WebSearch, Agent, AskUserQuestion). Лише на переході 11 → 12 скіл викликає `ExitPlanMode` зі зведеним планом, після чого фаза 12 копіює шаблон і записує `idea-brief.md` на диск.
 
-**Why:** AskUserQuestion checkpoints у Phases 1, 2, 9, 10, 11 — це не «clarifying questions», а **обовʼязковий data-input protocol**. Користувач має фактично зайти у глибину ідеї; без цього artifact = reconstruction з памʼяті моделі, не interview.
+**Чому так:** чекпойнти `AskUserQuestion` у фазах 1, 2, 9, 10, 11 — це не «уточнювальні питання», а **обов'язковий протокол збору даних**. Користувач має справді заглибитися в ідею; без цього артефакт — реконструкція з пам'яті моделі, а не інтерв'ю.
 
-**Auto Mode override:** якщо у сесії активний `Auto Mode` system-reminder, він **не** скасовує AskUserQuestion-checkpoints у цьому skill. Auto Mode стосується «pause to check whether I should proceed»-моментів між фазами, не data input. Фабрикація raw idea, Socratic answers, RICE/Feasibility/Recommendation confirms = nullify whole interview.
+**Auto Mode не скасовує чекпойнти:** якщо в сесії активний system-reminder `Auto Mode`, він **не** скасовує чекпойнти `AskUserQuestion` у цьому скілі. Auto Mode стосується моментів «зупинитися і перепитати, чи продовжувати» між фазами, а не збору даних. Вигадані сира ідея, відповіді на сократівські питання, підтвердження RICE / здійсненності / рекомендації = недійсне інтерв'ю.
 
-## AskUserQuestion style — junior-friendly Ukrainian (mandatory from 2026-05-23)
+## Стиль AskUserQuestion — зрозуміло для джуна, українською (обов'язково з 2026-05-23)
 
-Кожен `AskUserQuestion` у цьому skill-у (Phases 1, 2, 9, 10, 11) формулюється так, щоб **PM без технічного background або junior-розробник першого року** міг відповісти без помічника поряд.
+Кожне `AskUserQuestion` у цьому скілі (фази 1, 2, 9, 10, 11) формулюється так, щоб **PM без технічного бекграунду або джун першого року** міг відповісти без помічника поруч. Загальні правила — у [`../_shared/ask-style.md`](../_shared/ask-style.md); нижче — специфіка цього скіла.
 
-**Mandatory shape:**
+**Обов'язкова форма:**
 
-1. **Українська мова всюди** — labels + descriptions. Технічні ідентифікатори (RICE, R/I/C/E score, Feasibility ☑/☐, Approach A/B/C) залишаються англійською — це назви; але «дії» опцій — українською («Прийняти Approach C», «Підкорегувати E нижче», «Позначити TBD», «Confirm + перейти до Phase 11»).
+1. **Українська всюди** — і labels, і descriptions. Технічні ідентифікатори (RICE, R/I/C/E, здійсненність ☑/☐, Підхід A/B/C) лишаються як є — це назви; але «дії» опцій — українською («Прийняти Підхід C», «Знизити E», «Позначити TBD», «Підтвердити і перейти до фази 11»).
 
-2. **`question` поле — 3-4 речення** з трьох блоків:
-   - **КОНТЕКСТ** — звідки взялося це питання, на якій Phase ми зараз, що уже зібрано (1-line recap)
-   - **ЧОМУ ВАЖЛИВО** — що зривається, якщо відповідь буде неправильною (напр. «RICE без розуміння Effort = decision based on wishful thinking; Phase 11 буде з кривим foundation»)
-   - **ЯКА ДУМКА ПОТРІБНА** — на що дивитися перед вибором; чи треба перечитати prior phase output
+2. **Поле `question` — 3–4 речення** з трьох блоків:
+   - **КОНТЕКСТ** — звідки взялося питання, на якій ми фазі, що вже зібрано (підсумок в один рядок)
+   - **ЧОМУ ВАЖЛИВО** — що зламається, якщо відповідь буде хибною (напр. «RICE без розуміння зусиль = рішення на основі побажань; фаза 11 стоятиме на кривому фундаменті»)
+   - **ЯКА ДУМКА ПОТРІБНА** — на що подивитися перед вибором; чи варто перечитати результат попередньої фази
 
-3. **Option `description` — 3-5 речень** з трьох елементів:
-   - **Що технічно станеться**: який рядок у idea-brief зміниться, які later phases на цю відповідь впливають
+3. **`description` опції — 3–5 речень** з трьох елементів:
+   - **Що станеться технічно**: який рядок в idea-brief зміниться, на які наступні фази впливає відповідь
    - **Що опція означає простими словами** — без жаргону:
-     - Не «RICE score 80, Approach C» → «RICE-формула (Reach × Impact × Confidence / Effort) дала 80 для варіанту C; це значить, що C виглядає більш виправданим за ресурсами, ніж A (60) або B (45) — але це Claude-прогноз, не facts»
-     - Не «Feasibility 3/3 ☑» → «всі три блоки feasibility (Skills, Time, Tech) Claude позначив як «підтверджено» — це значить, що у команди є експертиза, у release-windows є місце, і tech-stack не блокує. Якщо щось з цього TBD — Phase 11 Recommendation буде з warning»
-     - Не «strategic vector» → «головний напрям, у якому ми йдемо: напр., «consolidate content delivery всередину BeerLMS» — все, що suggests розширення scope поза цей напрям, у Phase 8-9 буде flagged як scope creep»
-   - **Hidden trade-off** — якщо опція має наслідок, який junior міг би не побачити (напр. «Mark recommendation as TBD» → «всі downstream skill-и (write-prd, architecture-design) hard-refuse поки status не Confirmed — це блокує всю SDLC-pipeline для цієї фічі») — згадати це прямо у description
+     - Не «RICE score 80, Approach C» → «формула RICE (Охоплення × Вплив × Впевненість / Зусилля) дала 80 для варіанта C; тобто C виглядає більш виправданим за ресурсами, ніж A (60) чи B (45) — але це прогноз Claude, а не факти»
+     - Не «Feasibility 3/3 ☑» → «усі три блоки здійсненності (навички, час, технології) Claude позначив як «підтверджено» — тобто в команди є експертиза, у релізному графіку є місце, і стек не блокує. Якщо щось із цього TBD — рекомендація у фазі 11 буде з попередженням»
+     - Не «strategic vector» → «головний напрям, у якому ми рухаємося: напр., «зібрати доставку контенту всередині BeerLMS» — усе, що розширює скоуп поза цей напрям, у фазах 8–9 буде позначено як розростання скоупу»
+   - **Прихований компроміс** — якщо в опції є наслідок, якого джун не побачить (напр. «Позначити рекомендацію як TBD» → «усі наступні скіли (write-prd, architecture-design) відмовляться працювати, доки status не Confirmed — це блокує весь SDLC-пайплайн для цієї фічі»), — назви його прямо в description
 
-**Заборонено:** стислі англомовні labels («Confirm», «Adjust», «TBD»); однорядкові descriptions; технічні терміни без розшифровки; trade-off-и заховані у follow-up.
+**Заборонено:** стислі англійські labels («Confirm», «Adjust», «TBD»); однорядкові descriptions; технічні терміни без пояснення; компроміси, сховані в наступне питання.
 
-**Why:** PM-аудиторія цього skill-у працює з product-мовою, не з engineering-жаргоном; junior-аудиторія не має повного контексту про SDLC-pipeline. Дослівна цитата фідбеку 2026-05-23: «Треба щоб пояснення були ще більш зрозумілими для людей котрі буквально джуни в розробці» (контекст — sdlc:architecture-design, з вимогою «закласти не тільки в архітектуру а і в бриф ідею і в врайт прд»). Цю вимогу віддзеркалено в `sdlc:architecture-design/references/ask-examples.md` і `sdlc:write-prd/references/ask-examples.md`.
+**Чому:** аудиторія цього скіла — PM, які говорять продуктовою мовою, а не інженерним жаргоном, і джуни, які не мають повного контексту про SDLC-пайплайн. Дослівна цитата фідбеку 2026-05-23: «Треба щоб пояснення були ще більш зрозумілими для людей котрі буквально джуни в розробці».
 
-**Planning mode compatibility:** оскільки усі Write-операції зосереджені у Phase 12 (post-ExitPlanMode), skill коректно стартує у будь-якому permission mode (default / acceptEdits / plan / Auto). Якщо ExitPlanMode недоступний (тобто сесія була запущена не в plan mode) — Phase 12 виконується одразу після Phase 11, без переходу.
+**Сумісність із plan mode:** оскільки всі операції запису зосереджені у фазі 12 (після `ExitPlanMode`), скіл коректно стартує в будь-якому режимі дозволів (default / acceptEdits / plan / Auto). Якщо `ExitPlanMode` недоступний (сесію запущено не в plan mode) — фаза 12 виконується одразу після фази 11, без переходу.
 
-## Protocol
+## Протокол
 
-**14 phases. Phases 0-11 read-only. Phase 11.5 = ExitPlanMode. Phases 12-14 execute writes + self-check + commit propose.**
+**14 фаз. Фази 0–11 — лише читання. Фаза 11.5 = `ExitPlanMode`. Фази 12–14 — запис, самоперевірка, пропозиція коміту.**
 
-### 0. Pre-plan setup (read-only)
+### 0. Підготовка (лише читання)
 
-- **Read** `./templates/idea-brief.md` — завантажити skeleton у session memory (NO copy yet).
-- **Read** `CONTEXT.md` (root and `docs/features/<slug>/` if exists) — завантажити `## Глосарій` у session state.
-- **Verify** `docs/features/<slug>/idea-brief.md` does not exist with `status: Confirmed` (else: skip, update existing).
-- **NO Write / Edit / mkdir.** Setup стає одним з steps плану, який буде виконано у Phase 12.
+- **Прочитай** `./templates/idea-brief.md` — завантаж скелет у пам'ять сесії (ще НЕ копіюй).
+- **Прочитай** `CONTEXT.md` (кореневий і `docs/features/<slug>/`, якщо є) — завантаж `## Глосарій` (у старих файлах — `## Glossary`) у стан сесії.
+- **Перевір**, що `docs/features/<slug>/idea-brief.md` не існує зі `status: Confirmed` (інакше — не запускай, онови наявний).
+- **ЖОДНИХ Write / Edit / mkdir.** Підготовка стає одним із кроків плану, який виконається у фазі 12.
 
-### 0.25. Depth checkpoint (AskUserQuestion — mandatory)
+### 0.25. Чекпойнт глибини (AskUserQuestion — обов'язково)
 
-Одне питання: глибина (див. «Depth regulator»). easy → скорочений маршрут фаз; medium/hard → повний. У greenfield mode це ж питання підтверджує назву продукту (kebab-case), якщо користувач її ще не дав.
+Одне питання: глибина (див. «Регулятор глибини»). easy → скорочений маршрут фаз; medium/hard → повний. У режимі greenfield це ж питання підтверджує назву продукту (kebab-case), якщо користувач її ще не дав.
 
-### 1. Idea capture (AskUserQuestion — mandatory)
+### 1. Фіксація ідеї (AskUserQuestion — обов'язково)
 
-One AskUserQuestion для raw paragraph: «опиши ідею в 1-3 реченнях своїми словами». Persist verbatim у session memory як §1 Raw idea draft. Не редагувати — це baseline.
+Одне `AskUserQuestion` для сирого абзацу: «опиши ідею в 1–3 реченнях своїми словами». Збережи дослівно в пам'яті сесії як чернетку §1 «Сира ідея». Не редагуй — це точка відліку.
 
-### 2. Socratic deep dive (AskUserQuestion — mandatory)
+### 2. Сократівське заглиблення (AskUserQuestion — обов'язково)
 
-Pick 3-5 питань з 5 категорій based on idea-shape:
-- **Problem clarity** (що саме болить, для кого, як часто).
-- **Solution validation** (чому саме це рішення, що пробували раніше).
-- **Success criteria** (що означає «спрацювало» — конкретний metric).
-- **Constraints** (timeline, budget, team capacity, dependencies).
-- **Strategic fit** (як це лягає у roadmap / OKR / business outcome).
+Обери 3–5 питань із 5 категорій залежно від характеру ідеї:
+- **Ясність проблеми** (що саме болить, кому, як часто).
+- **Перевірка рішення** (чому саме таке рішення, що пробували раніше).
+- **Критерій успіху** (що означає «спрацювало» — конкретна метрика).
+- **Обмеження** (терміни, бюджет, ресурс команди, залежності).
+- **Стратегічна відповідність** (як це лягає в роадмеп / OKR / бізнес-результат).
 
-Delivery: AskUserQuestion батчами по 2-3 (не all-at-once).
+Подача: `AskUserQuestion` батчами по 2–3 питання (не всі одразу).
 
-### 3. Glossary capture (deferred fix-term)
+### 3. Збір термінів глосарію (fix-term відкладено)
 
-На кожному новому domain-слові у відповідях користувача — додати term до session-state list `pending_glossary_terms`. **НЕ викликати** `my-toolkit:fix-term` зараз — це писало б у CONTEXT.md, що недопустимо у planning mode. Skip generic tech terms (HTTP, JSON, queue, cache, database). Terms apply-ються у Phase 12 (post-ExitPlanMode) перед Write idea-brief.md.
+На кожне нове доменне слово у відповідях користувача — додай термін у список стану сесії `pending_glossary_terms`. **НЕ викликай** `my-toolkit:fix-term` зараз — він пише в CONTEXT.md, а в plan mode запис заборонено. Загальні технічні терміни пропускай (HTTP, JSON, черга, кеш, база даних). Терміни застосовуються у фазі 12 (після `ExitPlanMode`), перед записом idea-brief.md.
 
-### 4. Competitive research (Claude-driven, read-only)
+### 4. Дослідження конкурентів (веде Claude, лише читання)
 
-Claude автономно:
-- WebSearch + `mcp__plugin_qmd_qmd__query` для 3-5 конкурентів / adjacent solutions.
-- Формує таблицю: **Product · URL · Features · Value (1-5 per feature) · Gap** у session memory.
-- Кожен рядок з footnote: date and search query used.
-- Якщо internal tool без market — `N/A — internal tool` з reason.
+Claude самостійно:
+- WebSearch + `mcp__plugin_qmd_qmd__query` для 3–5 конкурентів / суміжних рішень.
+- Складає таблицю в пам'яті сесії: **Продукт · URL · Можливості · Цінність (1–5 на можливість) · Прогалина**.
+- До кожного рядка — примітка: дата і пошуковий запит.
+- Якщо це внутрішній інструмент без ринку — `N/A — внутрішній інструмент` з причиною.
 
-NO user input у цій фазі — Claude робить research, користувач лише review після.
+Користувач у цій фазі нічого не вводить — Claude досліджує, користувач лише переглядає результат.
 
-**Agent (medium/hard):** `my-toolkit:researcher` — передай raw idea + §2–§3; він повертає готову таблицю з footnotes. На easy — Claude робить 1–2 пошуки сам.
+**Агент (medium/hard):** `my-toolkit:researcher` — передай сиру ідею + §2–§3; він повертає готову таблицю з примітками. На easy Claude робить 1–2 пошуки сам.
 
-### 5. Strategic approaches (3 паралельні Agent.tool calls, read-only)
+### 5. Стратегічні підходи (сабагент, лише читання)
 
-Shared prompt template, 3 personas виконуються паралельно через окремі sub-agents:
-- **Variant-A (Simplicity):** найкоротший шлях, MVP-style, мінімум moving parts.
-- **Variant-B (Differentiation):** wow-factor / strategic moat / unique angle.
-- **Variant-C (Balanced):** trade-off між A та B.
+Три персони — три справді різні підходи:
+- **Варіант A (Простота):** найкоротший шлях, у стилі MVP, мінімум рухомих частин.
+- **Варіант B (Диференціація):** вау-ефект / стратегічна перевага / унікальний кут.
+- **Варіант C (Баланс):** компроміс між A і B.
 
-**Agent:** `my-toolkit:strategist` — один виклик повертає всі три approaches (A/B/C) у форматі нижче; на easy Claude пише їх сам.
+**Агент:** `my-toolkit:strategist` — один виклик повертає всі три підходи (A/B/C) у форматі нижче; на easy Claude пише їх сам.
 
-Кожен sub-agent повертає 1-paragraph approach з:
-- **Name** (3-5 word).
-- **Thesis** (1 sentence, product language — NO tech terms like Redis/Postgres/Kafka).
-- **For whom** (which segment from §3 Users).
-- **Outcome metric** (1 KPI: baseline → target).
-- **Key trade-off** (1 line).
-- **Effort signal**: S / M / L.
+Кожен підхід — один абзац із полями:
+- **Назва** (3–5 слів).
+- **Теза** (1 речення продуктовою мовою — БЕЗ технічних термінів на кшталт Redis/Postgres/Kafka).
+- **Для кого** (який сегмент з §3 «Користувачі»).
+- **Метрика результату** (1 KPI: зараз → ціль).
+- **Ключовий компроміс** (1 рядок).
+- **Оцінка зусиль**: S / M / L.
 
-### 6. Multi-perspective review (3 паралельні Agent.tool calls, read-only)
+### 6. Погляд з різних ролей (сабагент, лише читання)
 
-Three personas виконуються паралельно через sub-agents, кожен бачить усі 3 approaches з §5:
-- **Engineer** — concerns / risks / blockers. Explicitly told у prompt: «no library/DB names — abstract concerns only (latency, throughput, complexity, integration surface)».
-- **Executive** — business value / opportunity cost / strategic fit.
-- **UX-researcher** — user friction / discoverability / onboarding curve.
+Три ролі, кожна бачить усі 3 підходи з фази 5:
+- **Інженер** — ризики / складнощі / блокери. У промпті прямо сказано: «без назв бібліотек і БД — лише абстрактні якості (затримка, пропускна здатність, складність, площа інтеграції)».
+- **Бізнес** — цінність для бізнесу / ціна втрачених можливостей / стратегічна відповідність.
+- **UX-дослідник** — тертя для користувача / помітність / крива входження.
 
-Кожен повертає 3-5 bullets з concerns / value / risks для **кожного** з 3 approaches.
+Кожна роль дає 3–5 пунктів (ризики / цінність / загрози) для **кожного** з 3 підходів.
 
-**Agent:** `my-toolkit:analyst` — передай три approaches з Phase 5; він повертає 3×3 synthesis matrix (lens × approach).
+**Агент:** `my-toolkit:analyst` — передай три підходи з фази 5; він повертає зведену матрицю 3×3 (роль × підхід).
 
-Build §8 Synthesis matrix (3 personas × 3 approaches) з 6-word justifications per cell (+/0/-) у session memory.
+Збери в пам'яті сесії матрицю §8 (3 ролі × 3 підходи) з оцінкою +/0/− і обґрунтуванням до 6 слів у кожній клітинці.
 
-### 7. Trade-offs + edge cases (synthesis, read-only)
+### 7. Компроміси і граничні випадки (синтез, лише читання)
 
-Claude synthesizes у session memory (no user input — review/edit only):
-- Trade-offs per approach: pros / cons table.
-- 5-8 edge cases that any approach must handle (data, integrations, failure modes, ops).
+Claude зводить у пам'яті сесії (користувач нічого не вводить — лише переглядає / править):
+- Компроміси кожного підходу: таблиця плюсів і мінусів.
+- 5–8 граничних випадків, які має обробити будь-який підхід (дані, інтеграції, сценарії збоїв, експлуатація).
 
-### 8. Devil's advocate (1 Agent.tool call з clean context, read-only)
+### 8. Devil's advocate (сабагент у чистому контексті, лише читання)
 
-Spawn 1 sub-agent з чистим контекстом (NO upstream session memory), prompt: «знайди як це може провалитись. 5-10 attack vectors з production signals (що саме зламається, як це проявиться у monitoring/customer churn/incident)».
+Запусти сабагента з чистим контекстом (БЕЗ попередньої пам'яті сесії) із завданням: «знайди, як це може провалитися. 5–10 векторів атаки з сигналами з продакшену (що саме зламається, як це проявиться в моніторингу / відтоку клієнтів / інциденті)».
 
-**Agent:** `my-toolkit:devils-advocate` у режимі (B) failure-mode hunt — передай лише raw idea + три approaches, без решти session memory.
+**Агент:** `my-toolkit:devils-advocate` у режимі (B) «пошук сценаріїв провалу» — передай лише сиру ідею + три підходи, без решти пам'яті сесії.
 
-Найкритичніший attack vector → reserved для §10 Risks. Решта — для §9 Edge cases.
+Найкритичніший вектор атаки → у §10 «Ризики». Решта — у §9 «Граничні випадки».
 
-### 9. Claude-proposed RICE (AskUserQuestion — mandatory)
+### 9. RICE від Claude (AskUserQuestion — обов'язково)
 
-Claude обчислює R/I/C/E з upstream sections:
-- **Reach** ← §3 Users (кількість users / quarter affected).
-- **Impact** ← §2 Problem severity + Executive perspective bullets.
-- **Confidence** ← кількість TBDs / open questions; багато unresolved → 0.5; всі факти конкретні → 1.0.
-- **Effort** ← Effort signal з §7 approaches (S = 1-2 person-weeks, M = 3-5, L = 6-12).
+Claude рахує R/I/C/E з попередніх секцій:
+- **Охоплення (Reach)** ← §3 «Користувачі» (скільки користувачів за квартал зачепить).
+- **Вплив (Impact)** ← серйозність проблеми з §2 + пункти ролі «Бізнес».
+- **Впевненість (Confidence)** ← кількість TBD / відкритих питань; багато нерозв'язаного → 0.5; усі факти конкретні → 1.0.
+- **Зусилля (Effort)** ← оцінка зусиль підходів з §7 (S = 1–2 людино-тижні, M = 3–5, L = 6–12).
 
-Compute `R × I × C / E`. AskUserQuestion per number (4 окремі checkpoints або 1 multiSelect батч) з опціями: `Confirm N` / `Adjust higher` / `Adjust lower` / `Mark TBD`. Rationale у idea-brief цитує upstream секцію.
+Порахуй `R × I × C / E`. `AskUserQuestion` на кожне число (4 окремі чекпойнти або 1 батч з multiSelect) з опціями: «Підтвердити N» / «Підвищити» / «Знизити» / «Позначити TBD». Обґрунтування в idea-brief посилається на відповідну секцію.
 
-### 10. Claude-proposed Feasibility (read-only repo scan + AskUserQuestion — mandatory)
+### 10. Здійсненність від Claude (сканування репо + AskUserQuestion — обов'язково)
 
-Claude scans the project repo (read-only `find`/`ls`/`Glob` over feature dirs `docs/features/`, `src/`, `app/`, `pkg/`, `services/`, project-specific paths) для adjacent features which already shipped similar tech / workflow.
+Claude сканує репо проєкту в режимі лише читання (`find`/`ls`/`Glob` по теках фіч: `docs/features/`, `src/`, `app/`, `pkg/`, `services/`, специфічні для проєкту шляхи) і шукає вже випущені суміжні фічі зі схожою технологією чи процесом.
 
-Proposes 3 checkboxes:
-- **Tech** ☑/☐ — з обґрунтуванням («similar to <existing feature> in <module>»).
-- **Skills** ☑/☐ — з обґрунтуванням («team already shipped <X>, same skill applies»).
-- **Time** ☑/☐ — з обґрунтуванням («similar feature <X> shipped in <N> weeks»).
+Пропонує 3 позначки:
+- **Технології** ☑/☐ — з обґрунтуванням («схоже на <наявну фічу> в <модулі>»).
+- **Навички** ☑/☐ — з обґрунтуванням («команда вже випускала <X>, ті самі навички підходять»).
+- **Час** ☑/☐ — з обґрунтуванням («схожу фічу <X> випустили за <N> тижнів»).
 
-AskUserQuestion per checkbox (3 окремі або 1 multiSelect батч): `Confirm ☑` / `Flip to ☐ — <reason>` / `TBD`.
+`AskUserQuestion` на кожну позначку (3 окремі або 1 батч з multiSelect): «Підтвердити ☑» / «Змінити на ☐ — <причина>» / «TBD».
 
-### 11. Recommendation synthesis (AskUserQuestion — mandatory)
+### 11. Синтез рекомендації (AskUserQuestion — обов'язково)
 
-Claude picks один з 3 approaches з §5 + writes 3-5 sentence rationale у session memory.
+Claude обирає один із 3 підходів з фази 5 і пише в пам'ять сесії обґрунтування на 3–5 речень.
 
-Rationale MUST explicitly cite:
-- RICE score from §11.
-- Feasibility state from §12.
-- ≥1 multi-perspective synthesis matrix cell from §8.
-- ≥1 competitive gap from §6.
+Обґрунтування МУСИТЬ явно посилатися на:
+- RICE з §11.
+- Стан здійсненності з §12.
+- ≥1 клітинку матриці ролей з §8.
+- ≥1 прогалину конкурентів з §6.
 
-AskUserQuestion для user confirm: `Accept recommendation` / `Pick different approach` / `Mark recommendation as TBD`.
+`AskUserQuestion` для підтвердження: «Прийняти рекомендацію» / «Обрати інший підхід» / «Позначити рекомендацію як TBD».
 
-### 11.5. ExitPlanMode handoff (planning → execute)
+### 11.5. Перехід через ExitPlanMode (план → виконання)
 
-Усе вище — session memory only. Тепер skill **викликає `ExitPlanMode`** з planом який містить:
+Усе вище — лише в пам'яті сесії. Тепер скіл **викликає `ExitPlanMode`** з планом, який містить:
 
-1. Create directory `docs/features/<slug>/` (if absent).
-2. Copy template `./templates/idea-brief.md` → `docs/features/<slug>/idea-brief.md`.
-3. Apply pending glossary terms (Phase 3 list) via `my-toolkit:fix-term` to `CONTEXT.md`.
-4. Fill 15 sections + «Пов'язане» + «Самоперевірка DoD» у новому файлі з усього session memory (Phases 1-11).
-5. Update frontmatter: `status: Confirmed`, `value_score.{rice,state,confirmed_at}`, `feasibility_state: confirmed`.
-6. Run Phase 13 self-check (regex, length, citations).
-7. Propose commit + next owner.
+1. Створити теку `docs/features/<slug>/` (якщо немає).
+2. Скопіювати шаблон `./templates/idea-brief.md` → `docs/features/<slug>/idea-brief.md`.
+3. Застосувати відкладені терміни глосарію (список з фази 3) через `my-toolkit:fix-term` до `CONTEXT.md`.
+4. Заповнити 15 секцій + «Пов'язане» + «Самоперевірка DoD» у новому файлі з усієї пам'яті сесії (фази 1–11).
+5. Оновити frontmatter: `status: Confirmed`, `value_score.{rice,state,confirmed_at}`, `feasibility_state: confirmed`.
+6. Виконати самоперевірку фази 13 (regex, обсяг, посилання).
+7. Запропонувати коміт і наступного відповідального.
 
-Якщо ExitPlanMode tool недоступний (skill стартував не у plan mode) — пропустити цей step і виконати Phase 12 напряму. План у session memory залишається тим самим.
+Якщо інструмент `ExitPlanMode` недоступний (скіл стартував не в plan mode) — пропусти цей крок і виконай фазу 12 одразу. План у пам'яті сесії лишається тим самим.
 
-### 12. Execute: fill expanded idea-brief
+### 12. Виконання: заповнення idea-brief
 
 Після `ExitPlanMode` (або одразу, якщо plan mode не активний):
 
-- **mkdir** `docs/features/<slug>/` if absent.
-- **Copy** template → `docs/features/<slug>/idea-brief.md`.
-- **Apply** pending glossary terms (call `my-toolkit:fix-term` for each, якщо що).
-- **Edit/Write** усі секції 1-15 + «Пов'язане» + «Самоперевірка DoD» з session memory. Update frontmatter:
+- **mkdir** `docs/features/<slug>/`, якщо немає.
+- **Скопіюй** шаблон → `docs/features/<slug>/idea-brief.md`.
+- **Застосуй** відкладені терміни глосарію (виклич `my-toolkit:fix-term` для кожного, якщо вони є).
+- **Edit/Write** усі секції 1–15 + «Пов'язане» + «Самоперевірка DoD» з пам'яті сесії. Онови frontmatter:
   - `status: Confirmed`
-  - `value_score.rice: <N>`, `value_score.state: confirmed`, `value_score.confirmed_at: <today YYYY-MM-DD>`
+  - `value_score.rice: <N>`, `value_score.state: confirmed`, `value_score.confirmed_at: <сьогодні YYYY-MM-DD>`
   - `feasibility_state: confirmed`
-  - `updated_at: <today>`
+  - `updated_at: <сьогодні>`
 
-Parked approaches (2 non-recommended з §5) — у §14 з reason + revisit trigger.
+Відкладені підходи (2 нерекомендовані з фази 5) — у §14 з причиною і тригером, коли до них повернутися.
 
-### 13. Self-check vs DoD
+### 13. Самоперевірка за DoD
 
-Run all checks (Read + grep over the file just written):
-- **15 sections present.** Все 1-15 + «Пов'язане» + «Самоперевірка DoD» filled.
-- **No anti-pattern terms у body.** Regex check (excluding рядок «Немає заборонених термінів» у «Самоперевірка DoD»): `\b(Postgres|Redis|Kafka|MySQL|SM-2|FSRS|Leitner|SQLAlchemy|gorm|JSONB)\b` + `p99`. **Word-boundary важливий**: `chi` як substring у «architecture» — false positive; додати `\b`.
-- **Length ≤ 5 pages** (~2200 words ±10%). If over — compress §5 Approaches paragraphs and §6 Competitive table.
-- **Rationale citations.** §13 Recommendation cites §6 (1 gap) + §8 (1 cell) + §11 (RICE) + §12 (Feasibility).
+Виконай усі перевірки (Read + grep по щойно записаному файлу):
+- **Є всі 15 секцій.** Заповнені 1–15 + «Пов'язане» + «Самоперевірка DoD».
+- **Немає заборонених термінів у тілі.** Regex-перевірка (крім рядка «Немає заборонених термінів» у «Самоперевірка DoD»): `\b(Postgres|Redis|Kafka|MySQL|SM-2|FSRS|Leitner|SQLAlchemy|gorm|JSONB)\b` + `p99`. **Межа слова важлива**: `chi` як підрядок в «architecture» — хибне спрацювання; тому `\b`.
+- **Обсяг ≤ 5 сторінок** (~2200 слів ±10%). Якщо більше — стисни абзаци підходів у §7 і таблицю конкурентів у §6.
+- **Посилання в обґрунтуванні.** Рекомендація в §13 посилається на §6 (1 прогалина) + §8 (1 клітинка) + §11 (RICE) + §12 (здійсненність).
 
-If any check fails → identify offending section, re-Edit it, then re-check.
+Якщо якась перевірка не пройшла → знайди секцію-порушника, виправ її і перевір знову.
 
-### 14. Propose commit + next owner
+### 14. Пропозиція коміту і наступного відповідального
 
-Suggest commit (do not auto-execute):
+Запропонуй коміт (не виконуй сам):
 
 ```
 01: idea-brief for <slug>
 ```
 
-Next owner: PM + Tech Lead → `sdlc:write-prd <slug>` (gate тепер з idea-brief.md `status: Confirmed`).
+Наступні відповідальні: PM + Tech Lead → `sdlc:write-prd <slug>` (його вхідна умова — idea-brief.md зі `status: Confirmed`).
 
-**Greenfield mode:** замість write-prd наступний крок — `sdlc:scaffold` (матеріалізує проєкт з темплейта і забирає `docs/idea-brief.md` у нове репо); commit не пропонується, git-репо створить scaffold.
+**Режим greenfield:** замість write-prd наступний крок — `sdlc:scaffold` (матеріалізує проєкт із шаблону і забирає `docs/idea-brief.md` у нове репо); коміт не пропонується, git-репо створить scaffold.
 
-ADR (`sdlc:architecture-design`) НЕ викликається на gate 1 — це gate 3 concern (after sad.md (architecture-design) §Trade-offs). Якщо рекомендація з §13 виглядає як hard-to-reverse technical choice — note that у §15 Open questions, але don't open ADR thread here.
+ADR (`sdlc:architecture-design`) на етапі 1 НЕ викликається — це питання етапу 3 (після §Trade-offs у sad.md). Якщо рекомендація з §13 схожа на технічний вибір, який важко відкотити, — зазнач це в §15 «Відкриті питання», але ADR тут не відкривай.
 
-## Questions for discussion
+## Питання для обговорення
 
-- Який слаг — kebab-case, short, no date?
-- Який сегмент користувачів страждає найбільше від цієї проблеми?
-- Чому саме зараз — який trigger (incident / contract / deadline)?
-- Який метрик ми використовуємо щоб виміряти, що це спрацювало?
-- Які з 3 strategic approaches ближче до того, як команда зазвичай вирішує подібні задачі?
-- Чи погоджуєшся з Claude-proposed RICE numbers — чи треба коригувати?
-- Чи всі 3 Feasibility checkboxes реально закриті, чи десь є unknown?
+- Який slug — kebab-case, короткий, без дати?
+- Який сегмент користувачів найбільше страждає від цієї проблеми?
+- Чому саме зараз — що стало тригером (інцидент / контракт / дедлайн)?
+- Якою метрикою ми виміряємо, що це спрацювало?
+- Який із 3 стратегічних підходів ближчий до того, як команда зазвичай розв'язує подібні задачі?
+- Чи погоджуєшся з числами RICE від Claude, чи треба коригувати?
+- Чи справді закриті всі 3 позначки здійсненності, чи десь є невідоме?
 
 ## Definition of Done
 
-- `docs/features/<slug>/idea-brief.md` created and committed.
-- All 15 sections filled (no empty H2, `<!-- TBD -->` allowed where honestly missing).
-- No anti-pattern tech terms у тілі (verified by internal regex check, word-boundaries on).
-- Length ≤ 5 pages (~2200 words ±10%).
-- Frontmatter `status: Confirmed`, `value_score.state: confirmed`, `feasibility_state: confirmed`, `confirmed_at: <date>`.
-- §13 Recommendation rationale cites RICE (§11) + Feasibility (§12) + ≥1 multi-perspective cell (§8) + ≥1 competitive gap (§6).
-- **AskUserQuestion checkpoints actually fired** у Phases 1, 2, 9, 10, 11 (verify через user-message trail). Якщо хоч один був фабрикований → artifact NOT DoD-valid.
-- Next-stage owner assigned (PM + Tech Lead → `sdlc:write-prd`).
+- `docs/features/<slug>/idea-brief.md` створено і закомічено.
+- Заповнено всі 15 секцій (жодного порожнього H2; `<!-- TBD -->` допустимо там, де інформації чесно немає).
+- У тілі немає заборонених технічних термінів (перевірено внутрішнім regex з межами слів).
+- Обсяг ≤ 5 сторінок (~2200 слів ±10%).
+- Frontmatter: `status: Confirmed`, `value_score.state: confirmed`, `feasibility_state: confirmed`, `confirmed_at: <дата>`.
+- Обґрунтування рекомендації в §13 посилається на RICE (§11) + здійсненність (§12) + ≥1 клітинку матриці ролей (§8) + ≥1 прогалину конкурентів (§6).
+- **Чекпойнти `AskUserQuestion` справді спрацювали** у фазах 1, 2, 9, 10, 11 (перевір за повідомленнями користувача). Якщо хоч один вигадано → артефакт НЕ відповідає DoD.
+- Призначено відповідальних за наступний етап (PM + Tech Lead → `sdlc:write-prd`).
 
-## Anti-patterns
+## Антипатерни
 
-- **Inventing competitors because «we need to write something».** Better `N/A — internal tool` with reason than fake research. Competitors = «all the same» without links — that's not research, that's laziness. Phase 4 must produce real URLs + features + value ratings.
-- **User-input RICE («calculator game»).** Old skill asked user for Reach/Impact/Confidence/Effort — user has no grounding to answer. New flow: Claude proposes from upstream sections (Users → Reach, Executive perspective → Impact, TBDs → Confidence, Effort signal → Effort). User only confirms or adjusts.
-- **Tech terms in idea-brief body** (Postgres, Redis, Kafka, SM-2, FSRS, p99 latency, JSONB). This is a PRODUCT brief. Tech lives у PRD §6 + sad.md (architecture-design) + ADR (gate 3+). Phase 13 self-check enforces this.
-- **Single approach in §5.** Strategic approaches MUST be 3 (Simplicity / Differentiation / Balanced). One approach = decision already taken, nothing to evaluate.
-- **Skip multi-perspective review.** Engineer-only view → blind to business / UX risks. Executive-only view → blind to implementation cost. Need all 3 perspectives in §6 to balance.
-- **Devil's advocate from same session context.** Phase 8 MUST spawn sub-agent з clean context, otherwise it's biased by all the optimism upstream.
-- **Skip Feasibility repo scan.** Phase 10 must do `find`/`ls` over feature dirs and cite adjacent shipped features. «Tech: ☑ — we know how» without citation = guess.
-- **Recommendation без rationale citing 4 upstream sections.** Phase 11 rationale MUST cite §6 (competitive gap), §8 (multi-perspective cell), §11 (RICE), §12 (Feasibility). Otherwise it's «I feel like A».
-- **Propose ADR at end of phase 14.** ADR moves to gate 3 (after sad.md (architecture-design)). Gate 1 is pure product — no tech locks-in.
-- **Brainstorm-style transcript dump.** §14 «Відкладені та відхилені підходи» is structured (table with status / reason / revisit trigger), not raw chat log.
-- **Solution-mode prose in §2 Problem.** «We need to add Redis» → wrong section. §2 is the problem only; solutions live у §7 Approaches.
-- **Fabricating user answers under Auto Mode.** `Auto Mode Active` system-reminder каже «work without stopping for clarifying questions» — це стосується pause-to-check моментів, а не in-flow AskUserQuestion checkpoints цього skill. Phases 1, 2, 9, 10, 11 MUST fire real AskUserQuestion-и; генерувати raw idea / Socratic answers / RICE confirms / Feasibility confirms / recommendation accept без user-input = reconstruction artifact, не interview. Якщо AskUserQuestion відкинуто через permission denial — зупинитись і повідомити користувача, не обходити.
-- **Writing files inside planning mode.** Phases 0-11 read-only. Якщо skill стартував у plan mode і ти спробуєш Write/Edit/mkdir раніше ніж ExitPlanMode (Phase 11.5) — permission deny. Тримай весь artifact у session memory до Phase 12.
+- **Вигадувати конкурентів, бо «треба щось написати».** Краще `N/A — внутрішній інструмент` з причиною, ніж фейкове дослідження. «Конкуренти — усі однакові» без посилань — це не дослідження, а лінощі. Фаза 4 мусить дати реальні URL + можливості + оцінки цінності.
+- **RICE від користувача («гра в калькулятор»).** Старий скіл просив користувача самому назвати Reach/Impact/Confidence/Effort — у нього немає на що спертися. Новий процес: Claude пропонує числа з попередніх секцій (Користувачі → Охоплення, роль «Бізнес» → Вплив, TBD → Впевненість, оцінка зусиль → Зусилля). Користувач лише підтверджує або коригує.
+- **Технічні терміни в тілі брифу** (Postgres, Redis, Kafka, SM-2, FSRS, p99 latency, JSONB). Це ПРОДУКТОВИЙ бриф. Технології живуть у §6 PRD + sad.md (architecture-design) + ADR (етап 3+). Самоперевірка фази 13 це контролює.
+- **Один підхід у фазі 5.** Стратегічних підходів МАЄ бути 3 (Простота / Диференціація / Баланс). Один підхід = рішення вже прийнято, нічого оцінювати.
+- **Пропуск огляду ролей.** Лише інженерний погляд → сліпота до бізнес- і UX-ризиків. Лише бізнесовий → сліпота до вартості реалізації. Потрібні всі 3 ролі, щоб урівноважити.
+- **Devil's advocate з того самого контексту сесії.** Фаза 8 МАЄ запускати сабагента з чистим контекстом, інакше його зачепить увесь попередній оптимізм.
+- **Пропуск сканування репо для здійсненності.** Фаза 10 мусить пройтися `find`/`ls` по теках фіч і послатися на суміжні випущені фічі. «Технології: ☑ — ми знаємо як» без посилання = здогад.
+- **Рекомендація без обґрунтування з 4 секцій.** Обґрунтування у фазі 11 МУСИТЬ посилатися на §6 (прогалина конкурентів), §8 (клітинка матриці ролей), §11 (RICE), §12 (здійсненність). Інакше це «мені здається, що A».
+- **Пропонувати ADR наприкінці фази 14.** ADR — це етап 3 (після sad.md від architecture-design). Етап 1 — суто продуктовий, без технічних зобов'язань.
+- **Бриф як стенограма брейншторму.** §14 «Відкладені та відхилені підходи» — структурована таблиця (статус / причина / коли повернутися), а не сирий лог чату.
+- **Рішення замість проблеми в §2.** «Нам треба додати Redis» → не та секція. §2 — лише проблема; рішення живуть у §7 «Стратегічні підходи».
+- **Вигадувати відповіді користувача в Auto Mode.** System-reminder `Auto Mode Active` каже «працюй, не зупиняючись на уточнювальні питання» — це про паузи «чи продовжувати», а не про чекпойнти `AskUserQuestion` всередині цього скіла. Фази 1, 2, 9, 10, 11 МУСЯТЬ ставити справжні `AskUserQuestion`; генерувати сиру ідею / сократівські відповіді / підтвердження RICE / здійсненності / рекомендації без участі користувача = реконструкція, а не інтерв'ю. Якщо `AskUserQuestion` відхилено через брак дозволу — зупинись і повідом користувача, не обходь.
+- **Запис файлів у plan mode.** Фази 0–11 — лише читання. Якщо скіл стартував у plan mode і ти спробуєш Write/Edit/mkdir раніше за `ExitPlanMode` (фаза 11.5) — отримаєш відмову в дозволі. Тримай увесь артефакт у пам'яті сесії до фази 12.
 
-## Template
+## Шаблон
 
 → [./templates/idea-brief.md](./templates/idea-brief.md)
 
-## Example invocation
+## Приклад виклику
 
-> **User:** «interview a feature: 3 клієнти за тиждень поскаржилися на 429s через сусідів, треба per-user rate limit»
+> **Користувач:** «інтерв'ю фічі: 3 клієнти за тиждень поскаржилися на 429 через сусідів, треба per-user rate limit»
 >
-> **Skill behavior (planning-mode-friendly flow):**
+> **Поведінка скіла (сумісно з plan mode):**
 >
-> **— Plan mode (read-only) —**
-> 1. **Phase 0** — suggests slug `rate-limiting-per-user`. User confirms. **Read** template і root `CONTEXT.md`. NO copy yet.
-> 2. **Phase 1** — AskUserQuestion: «опиши ідею в 1-3 реченнях». Captures raw paragraph verbatim у session memory як §1 draft.
-> 3. **Phase 2** — Socratic batch 1 (AskUserQuestion): «який сегмент клієнтів?» «як часто це б'є?» Batch 2 (AskUserQuestion): «що пробували раніше?» «що означає 'спрацювало' — який метрик?»
-> 4. **Phase 3** — у відповідях з'явився термін «tenant» → додається до `pending_glossary_terms` (fix-term викликається у Phase 12, бо CONTEXT.md write).
-> 5. **Phase 4** — Claude робить WebSearch: Kong per-consumer, Tyk, AWS API Gateway throttling, Cloudflare rate-limit. Будує §6 таблицю у session memory.
-> 6. **Phase 5** — 3 паралельні sub-agents (single message):
->    - A (Simplicity): «Per-tenant request quota at edge proxy» — fastest, generic, S effort.
->    - B (Differentiation): «Adaptive per-tenant quota based on plan-tier» — pricing leverage, L effort.
->    - C (Balanced): «Static per-tenant quota з self-serve config» — M effort, customer can tweak.
-> 7. **Phase 6** — 3 sub-agents (Engineer / Executive / UX) review усі 3 паралельно. Engineer abstract (no Redis/nginx). Synthesis matrix у session memory.
-> 8. **Phase 7** — Claude synthesizes trade-offs + 6 edge cases у session memory.
-> 9. **Phase 8** — sub-agent з clean context: «how does this fail?» Returns 7 attack vectors. Top → reserved для §10 Risks.
-> 10. **Phase 9** — Claude proposes RICE: R=200, I=2, C=0.8, E=3 → 107. AskUserQuestion per number; user adjusts Effort to 4 → Score = 80.
-> 11. **Phase 10** — Claude scans repo (read-only): finds adjacent `usage-metering`. Proposes 3 ☑. AskUserQuestion per checkbox; user confirms all 3.
-> 12. **Phase 11** — Claude picks **Approach C**. Rationale cites: RICE=80, Feasibility 3/3 ☑, Engineer bullet, Kong gap. AskUserQuestion: user accepts.
+> **— Plan mode (лише читання) —**
+> 1. **Фаза 0** — пропонує slug `rate-limiting-per-user`. Користувач підтверджує. **Читає** шаблон і кореневий `CONTEXT.md`. Ще НЕ копіює.
+> 2. **Фаза 1** — `AskUserQuestion`: «опиши ідею в 1–3 реченнях». Зберігає сирий абзац дослівно в пам'яті сесії як чернетку §1.
+> 3. **Фаза 2** — сократівський батч 1 (`AskUserQuestion`): «який сегмент клієнтів?», «як часто це б'є?». Батч 2: «що пробували раніше?», «що означає «спрацювало» — яка метрика?»
+> 4. **Фаза 3** — у відповідях з'явився термін «tenant» → додається до `pending_glossary_terms` (fix-term викликається у фазі 12, бо це запис у CONTEXT.md).
+> 5. **Фаза 4** — `my-toolkit:researcher` шукає: Kong per-consumer, Tyk, AWS API Gateway throttling, Cloudflare rate-limit. Таблиця §6 — у пам'яті сесії.
+> 6. **Фаза 5** — `my-toolkit:strategist` повертає три підходи:
+>    - A (Простота): «Квота запитів на tenant на вході» — найшвидше, універсально, зусилля S.
+>    - B (Диференціація): «Адаптивна квота на tenant за тарифом» — важіль для ціноутворення, зусилля L.
+>    - C (Баланс): «Статична квота на tenant із самостійним налаштуванням» — зусилля M, клієнт може підкрутити.
+> 7. **Фаза 6** — `my-toolkit:analyst` оцінює всі 3 підходи з ролей Інженер / Бізнес / UX. Інженер — абстрактно (без Redis/nginx). Матриця — у пам'яті сесії.
+> 8. **Фаза 7** — Claude зводить компроміси + 6 граничних випадків у пам'яті сесії.
+> 9. **Фаза 8** — `my-toolkit:devils-advocate` з чистим контекстом: «як це провалиться?» Повертає 7 векторів атаки. Найгостріший → у §10 «Ризики».
+> 10. **Фаза 9** — Claude пропонує RICE: R=200, I=2, C=0.8, E=3 → 107. `AskUserQuestion` на кожне число; користувач піднімає зусилля до 4 → RICE = 80.
+> 11. **Фаза 10** — Claude сканує репо (лише читання): знаходить суміжну `usage-metering`. Пропонує 3 ☑. `AskUserQuestion` на кожну позначку; користувач підтверджує всі 3.
+> 12. **Фаза 11** — Claude обирає **Підхід C**. Обґрунтування посилається на: RICE=80, здійсненність 3/3 ☑, пункт інженера, прогалину Kong. `AskUserQuestion`: користувач приймає.
 >
-> **— ExitPlanMode handoff —**
-> 13. **Phase 11.5** — `ExitPlanMode` із plan: «create dir, copy template, apply fix-term tenant, fill 15 sections, run self-check, propose commit».
+> **— Перехід через ExitPlanMode —**
+> 13. **Фаза 11.5** — `ExitPlanMode` з планом: «створити теку, скопіювати шаблон, fix-term tenant, заповнити 15 секцій, самоперевірка, запропонувати коміт».
 >
-> **— Execute (post-plan) —**
-> 14. **Phase 12** — `mkdir docs/features/rate-limiting-per-user/`, copy template, `my-toolkit:fix-term tenant`, Write idea-brief.md з усіма секціями. Frontmatter `status: Confirmed`, `confirmed_at: 2026-05-21`.
-> 15. **Phase 13** — self-check: 15 sections ✓, no Postgres/Redis у body ✓, 4.2 pages ✓, citations ✓.
-> 16. **Phase 14** — Commit message proposed: `01: idea-brief for rate-limiting-per-user` (user executes). Next: PM + Tech Lead → `sdlc:write-prd rate-limiting-per-user`.
+> **— Виконання (після плану) —**
+> 14. **Фаза 12** — `mkdir docs/features/rate-limiting-per-user/`, копіює шаблон, `my-toolkit:fix-term tenant`, записує idea-brief.md з усіма секціями. Frontmatter: `status: Confirmed`, `confirmed_at: 2026-05-21`.
+> 15. **Фаза 13** — самоперевірка: 15 секцій ✓, немає Postgres/Redis у тілі ✓, 4.2 сторінки ✓, посилання ✓.
+> 16. **Фаза 14** — пропонує коміт `01: idea-brief for rate-limiting-per-user` (виконує користувач). Далі: PM + Tech Lead → `sdlc:write-prd rate-limiting-per-user`.

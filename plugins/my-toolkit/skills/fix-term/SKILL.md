@@ -26,71 +26,71 @@ triggers:
   - "онови глосарій"
 ---
 
-# Skill: fix-term
+# Скіл: fix-term
 
-Lazy utility that fixes the meaning of a domain term in `CONTEXT.md` the moment it first surfaces, so its sense doesn't drift across the pipeline. For each term it captures a one-sentence canonical definition and — when the word is ambiguous — a **NOT-reference** naming the concept it's confused with. Runs anytime, with no upstream gate: a single term mid-interview, or a batch handed over by `write-prd`. The output feeds `write-prd` (role + domain-term names) and `architecture-design` (invariants), which treat `## Глосарій` as canonical and override anything that contradicts it.
+Утиліта «на вимогу», яка фіксує значення доменного терміна в `CONTEXT.md` у момент, коли він уперше з'являється, щоб його зміст не розповзався по пайплайну. Для кожного терміна вона записує канонічне визначення одним реченням і — якщо слово неоднозначне — **НЕ-посилання**: поняття, з яким його плутають. Запускається будь-коли, без вхідних умов: один термін посеред інтерв'ю або пакет, який передає `write-prd`. Результат використовують `write-prd` (назви ролей і доменних термінів) та `architecture-design` (інваріанти): для них `## Глосарій` — канонічне джерело, яке переважує все, що йому суперечить.
 
-This is a capture utility, not a Socratic stage — it does **not** run the shared Socratic loop or critic. The one shared dependency is question phrasing:
+Це утиліта фіксації, а не сократівський етап — вона **не** запускає спільний сократівський цикл чи критика. Єдина спільна залежність — формулювання питань:
 → [`../_shared/ask-style.md`](../_shared/ask-style.md)
 
-## Owner
+## Відповідальний
 
-Whoever drives the conversation — anyone who spots ambiguity. Tech Lead approves the canonical form when a term is contested.
+Той, хто веде розмову, — будь-хто, хто помітив неоднозначність. Якщо термін спірний, канонічну форму затверджує Tech Lead.
 
-## Inputs
+## Вхідні дані
 
-- `<term>` — the domain word/phrase to fix. If not given, ask for it.
-- (Optional) `<slug>` — feature slug; targets `docs/features/<slug>/CONTEXT.md`. Absent → single-context check below.
-- (Optional) `<context>` — bounded-context name (for multi-context repos); detected via `CONTEXT-MAP.md`.
-- (Optional) `pending_glossary_terms` — a batch handed over by `write-prd` after it writes the PRD. Process each term in turn.
-- (Optional) proposed phrasings already surfaced in an interview/brainstorm — offer them as definition options instead of asking blank.
+- `<term>` — доменне слово чи фраза, яку треба зафіксувати. Якщо не дано — запитай.
+- (Опційно) `<slug>` — slug фічі; ціль — `docs/features/<slug>/CONTEXT.md`. Немає → перевірка на один контекст нижче.
+- (Опційно) `<context>` — назва bounded context (для репо з кількома контекстами); визначається через `CONTEXT-MAP.md`.
+- (Опційно) `pending_glossary_terms` — пакет, який передає `write-prd` або `interview` після запису свого документа. Обробляй терміни по черзі.
+- (Опційно) формулювання, які вже прозвучали в інтерв'ю чи брейнштормі, — пропонуй їх як варіанти визначення, а не питай з нуля.
 
-## Protocol
+## Протокол
 
-1. **Detect context mode.** `test -f CONTEXT-MAP.md` at the repo root.
-   - **Multi-context** (file exists and contains real rows): ask which bounded context `<term>` belongs to: «Available contexts: `<list from CONTEXT-MAP.md>`.» (phrasing per [`../_shared/ask-style.md`](../_shared/ask-style.md)). Target `<ctx>/CONTEXT.md`. If the context isn't yet registered in CONTEXT-MAP.md, add a row now (`| <ctx> | <path> | <1-line scope> |`).
-   - **Single-context** (no CONTEXT-MAP.md or only a stub): if `<slug>` is given → `docs/features/<slug>/CONTEXT.md`; otherwise → repo-root `CONTEXT.md`. One glossary per file; don't split a term across both.
-2. **Generic-term filter.** Reject words that name infrastructure or transport rather than the business domain (e.g. HTTP, queue, cache, the datastore, a framework, JSON, REST, gRPC). Refuse: «`<term>` is technical, not a domain word — its choice belongs in the SAD or an ADR, not the glossary». Continue only for genuine domain vocabulary.
-3. **Bootstrap (lazy).** `test -f <target>`. Missing → copy [`./templates/CONTEXT.md`](./templates/CONTEXT.md) to `<target>`. Present → read it.
-4. **Conflict check.** `grep -i "^- <term>" <target>`.
-   - Found, identical sense → STOP, report «already in the glossary».
-   - Found, different sense → escalate via `AskUserQuestion` (phrasing per [`../_shared/ask-style.md`](../_shared/ask-style.md)): «`<term>` is already defined as `<existing>` — same concept or a different one?». If different, propose a disambiguating pair of names (e.g. a billing-scoped vs a runtime-scoped variant) and fix both.
-   - Not found → continue.
-5. **Ask the canonical definition** — one `AskUserQuestion`: «Define `<term>` in this domain, in one sentence». Offer interview/brainstorm phrasings as options when available; otherwise free text. Follow the explanatory style in [`../_shared/ask-style.md`](../_shared/ask-style.md) — gloss every technical term inline, explain why the definition matters.
-6. **Ask the NOT-reference** — one `AskUserQuestion`: «Which concept does `<term>` get confused with, so a future reader doesn't mix them up?». No plausible homonym → `None`.
-7. **Compose one line.** `- <term> — <one-sentence definition>. NOT <confused concept + how it differs>.` — or, when step 6 = None, `- <term> — <definition>.`
-8. **Append under `## Глосарій`.** Read the file, insert the line in `## Глосарій` (alphabetical if the section is already sorted, else at the end). Never rewrite existing entries. Старі файли, створені плагіном `sdlc`, мають англійський заголовок `## Glossary` — тоді пиши туди, заголовок не перейменовуй.
-9. **Prune empty H2s.** On a fresh bootstrap, delete `## Інваріанти` / `## Поза скоупом` if they hold no real content — only `## Глосарій` is mandatory. (A genuine invariant or out-of-scope note goes in its section, never as implementation detail.)
-10. **Stamp + commit + handoff.** Set `updated_at: <today>` in the frontmatter. Propose `context: + <term>` (or `context: + <term>, <term2>` for a batch). May fold into the caller's intake/PRD commit. Then **emit the stage-handoff block** per [`../_shared/handoff.md`](../_shared/handoff.md) (utility variant) — *What I did* + *Review* (`CONTEXT.md`) + *Run next*: resume your backbone stage (e.g. `/sdlc-architecture-design <slug>`); `/clear` optional.
+1. **Визнач режим контексту.** `test -f CONTEXT-MAP.md` у корені репо.
+   - **Кілька контекстів** (файл є і містить справжні рядки): запитай, до якого bounded context належить `<term>`: «Доступні контексти: `<список з CONTEXT-MAP.md>`.» (формулювання — за [`../_shared/ask-style.md`](../_shared/ask-style.md)). Ціль — `<ctx>/CONTEXT.md`. Якщо контексту ще немає в CONTEXT-MAP.md — додай рядок зараз (`| <ctx> | <path> | <скоуп в 1 рядок> |`).
+   - **Один контекст** (CONTEXT-MAP.md немає або це заглушка): якщо дано `<slug>` → `docs/features/<slug>/CONTEXT.md`; інакше → кореневий `CONTEXT.md`. Один глосарій на файл; не розносиш термін по обох.
+2. **Фільтр загальних слів.** Відхиляй слова, що називають інфраструктуру чи транспорт, а не бізнес-домен (напр. HTTP, черга, кеш, сховище даних, фреймворк, JSON, REST, gRPC). Відмова: «`<term>` — технічний термін, а не доменне слово; його вибір належить SAD або ADR, а не глосарію». Продовжуй лише для справжньої доменної лексики.
+3. **Створення за потреби.** `test -f <target>`. Немає → скопіюй [`./templates/CONTEXT.md`](./templates/CONTEXT.md) у `<target>`. Є → прочитай.
+4. **Перевірка конфлікту.** `grep -i "^- <term>" <target>`.
+   - Знайдено, те саме значення → СТОП, повідом «уже є в глосарії».
+   - Знайдено, інше значення → винеси на рішення через `AskUserQuestion` (формулювання — за [`../_shared/ask-style.md`](../_shared/ask-style.md)): «`<term>` уже визначено як `<existing>` — це те саме поняття чи інше?». Якщо інше — запропонуй пару назв, що їх розрізняє (напр. варіант у межах білінгу і варіант у межах рантайму), і зафіксуй обидві.
+   - Не знайдено → продовжуй.
+5. **Запитай канонічне визначення** — одне `AskUserQuestion`: «Визнач `<term>` у цьому домені одним реченням». Якщо є формулювання з інтерв'ю чи брейншторму — запропонуй їх як варіанти; інакше — вільний текст. Дотримуйся пояснювального стилю з [`../_shared/ask-style.md`](../_shared/ask-style.md): пояснюй кожен технічний термін прямо в тексті і розкажи, чому визначення важливе.
+6. **Запитай НЕ-посилання** — одне `AskUserQuestion`: «З яким поняттям плутають `<term>`, щоб майбутній читач їх не змішав?». Правдоподібного двійника немає → `Немає`.
+7. **Склади один рядок.** `- <term> — <визначення одним реченням>. НЕ <поняття, з яким плутають + чим відрізняється>.` — або, якщо на кроці 6 `Немає`, `- <term> — <визначення>.`
+8. **Додай під `## Глосарій`.** Прочитай файл, встав рядок у `## Глосарій` (за алфавітом, якщо секція вже відсортована, інакше — в кінець). Ніколи не переписуй наявні записи. Старі файли, створені плагіном `sdlc`, мають англійський заголовок `## Glossary` — тоді пиши туди, заголовок не перейменовуй.
+9. **Прибери порожні H2.** Якщо файл щойно створено — видали `## Інваріанти` / `## Поза скоупом`, якщо в них немає реального змісту; обов'язковий лише `## Глосарій`. (Справжній інваріант чи пункт поза скоупом іде у свою секцію, але ніколи — як деталь реалізації.)
+10. **Дата + коміт + передача.** Постав `updated_at: <сьогодні>` у frontmatter. Запропонуй коміт `context: + <term>` (або `context: + <term>, <term2>` для пакета). Його можна влити в коміт скіла, що викликав (intake/PRD). Потім **виведи блок передачі етапу** за [`../_shared/handoff.md`](../_shared/handoff.md) (варіант «утиліта») — *Що я зробив* + *Перевір* (`CONTEXT.md`) + *Запусти далі*: повернись до свого основного етапу (напр. `/sdlc-architecture-design <slug>`); `/clear` за бажанням.
 
 ## Definition of Done
 
-- `<target>` exists and contains `<term>` under `## Глосарій` in the «one-sentence canonical + optional NOT-reference» format.
-- Any conflict with an existing entry is resolved (reported as duplicate, or disambiguated into distinct names).
-- Generic tech words are refused, not stored.
-- Empty H2 sections are pruned on bootstrap; `## Глосарій` remains.
-- Multi-context: `CONTEXT-MAP.md` has a row for the context; the term lands in the correct bounded-context `CONTEXT.md`.
-- `updated_at` reflects today; a commit is proposed.
+- `<target>` існує і містить `<term>` під `## Глосарій` у форматі «канонічне визначення одним реченням + НЕ-посилання за потреби».
+- Конфлікт із наявним записом розв'язано (повідомлено як дублікат або розведено на різні назви).
+- Загальні технічні слова відхилено, а не збережено.
+- Порожні H2 прибрано при створенні; `## Глосарій` лишився.
+- Кілька контекстів: у `CONTEXT-MAP.md` є рядок для контексту; термін потрапив у `CONTEXT.md` правильного bounded context.
+- `updated_at` — сьогоднішня дата; коміт запропоновано.
 
-## Anti-patterns
+## Антипатерни
 
-- **Glossary as PRD or scratch pad.** Implementation detail («counter stored with a 1-minute TTL») belongs in the SAD/ADR, not here.
-- **Empty H2 «for completeness».** A heading with no bullets — prune it.
-- **Silent edits.** Adding a term without confirming the definition; the author must control the glossary.
-- **Batched «I'll add them later».** Capture each term the moment it surfaces — deferral loses it.
-- **Storing generic tech words.** HTTP, queue, the datastore name — refuse them.
-- **Rewriting on re-run.** The skill reads and appends; it never overwrites the file.
-- **Ambiguous term with no NOT-reference.** A homonym without «NOT …» is a six-month confusion waiting to happen.
-- **Multi-context term in the wrong file.** When `CONTEXT-MAP.md` exists, each term must land in the file that owns its bounded context — not always the root.
+- **Глосарій як PRD чи чернетка.** Деталі реалізації («лічильник зберігається з TTL 1 хвилина») належать SAD/ADR, а не сюди.
+- **Порожній H2 «для повноти».** Заголовок без пунктів — прибери.
+- **Тихі правки.** Додавати термін без підтвердження визначення; глосарієм керує автор.
+- **«Додам потім пакетом».** Фіксуй кожен термін щойно він з'явився — відкладене губиться.
+- **Збереження загальних технічних слів.** HTTP, черга, назва сховища — відхиляй.
+- **Переписування при повторному запуску.** Скіл читає і дописує; він ніколи не перезаписує файл.
+- **Неоднозначний термін без НЕ-посилання.** Омонім без «НЕ …» — це плутанина, яка вибухне через пів року.
+- **Термін не в тому файлі при кількох контекстах.** Якщо `CONTEXT-MAP.md` існує, кожен термін має потрапити у файл, що володіє його bounded context, а не завжди в кореневий.
 
-## References & templates
+## Посилання й шаблони
 
-- [`./templates/CONTEXT.md`](./templates/CONTEXT.md) — output scaffold; inline comments are the per-section contract (Glossary mandatory, Invariants/Out-of-scope pruned when empty).
-- [`../_shared/ask-style.md`](../_shared/ask-style.md) — phrasing for the definition / NOT-reference / conflict questions.
-- [`../_shared/handoff.md`](../_shared/handoff.md) — stage-handoff block format (utility variant).
-- [`./templates/CONTEXT-MAP.md`](./templates/CONTEXT-MAP.md) — CONTEXT-MAP.md scaffold for multi-context repos.
+- [`./templates/CONTEXT.md`](./templates/CONTEXT.md) — каркас результату; коментарі всередині — контракт кожної секції (Глосарій обов'язковий, Інваріанти / Поза скоупом прибираються, якщо порожні).
+- [`../_shared/ask-style.md`](../_shared/ask-style.md) — як формулювати питання про визначення / НЕ-посилання / конфлікт.
+- [`../_shared/handoff.md`](../_shared/handoff.md) — формат блоку передачі етапу (варіант «утиліта»).
+- [`./templates/CONTEXT-MAP.md`](./templates/CONTEXT-MAP.md) — каркас CONTEXT-MAP.md для репо з кількома контекстами.
 
-## Example invocation
+## Приклад виклику
 
-> **User:** «add term tenant for rate-limiting-per-user»
-> **Skill:** `test -f CONTEXT-MAP.md` → not exists. Single-context. `<slug>` = `rate-limiting-per-user` → target `docs/features/rate-limiting-per-user/CONTEXT.md`. Generic filter: `tenant` is domain → continue. File missing → copy template. `grep "^- tenant"` → not found. Definition Q → «a billable customer organisation owning 1+ users». NOT-reference Q → «NOT user — a user is one person inside a tenant». Compose `- tenant — a billable customer organisation owning 1+ users. NOT user (a user is one person inside a tenant).` → append under `## Глосарій` → prune empty `## Інваріанти`/`## Поза скоупом` → `updated_at: 2026-05-29` → commit `context: + tenant`. Emit handoff block (utility variant): *What I did* — appended `tenant` to `docs/features/rate-limiting-per-user/CONTEXT.md`; *Run next* — resume `/sdlc-architecture-design rate-limiting-per-user`.
+> **Користувач:** «додай термін tenant для rate-limiting-per-user»
+> **Скіл:** `test -f CONTEXT-MAP.md` → немає. Один контекст. `<slug>` = `rate-limiting-per-user` → ціль `docs/features/rate-limiting-per-user/CONTEXT.md`. Фільтр: `tenant` — доменне слово → продовжуємо. Файлу немає → копіюємо шаблон. `grep "^- tenant"` → не знайдено. Питання про визначення → «організація-клієнт, якій виставляють рахунок і якій належить 1+ користувачів». НЕ-посилання → «НЕ user — user це одна людина всередині tenant». Складаємо `- tenant — організація-клієнт, якій виставляють рахунок і якій належить 1+ користувачів. НЕ user (user — одна людина всередині tenant).` → додаємо під `## Глосарій` → прибираємо порожні `## Інваріанти`/`## Поза скоупом` → `updated_at: 2026-05-29` → коміт `context: + tenant`. Виводимо блок передачі (варіант «утиліта»): *Що я зробив* — додав `tenant` у `docs/features/rate-limiting-per-user/CONTEXT.md`; *Запусти далі* — повернись до `/sdlc-architecture-design rate-limiting-per-user`.

@@ -1,7 +1,7 @@
 {
   "name": "my-toolkit",
-  "version": "0.3.0",
-  "description": "Мій особистий набір для Claude Code на основі sdlc: interview (ідеація → idea-brief.md) з fix-term і агентами researcher / strategist / analyst / devils-advocate. Описи й шаблони українською.",
+  "version": "0.4.0",
+  "description": "Мій особистий набір для Claude Code на основі sdlc: interview (ідеація → idea-brief.md) з fix-term і агентами researcher / strategist / analyst / devils-advocate. Повністю українською.",
   "author": {
     "name": "Anton Pohorielov",
     "url": "https://github.com/Gitboolean"

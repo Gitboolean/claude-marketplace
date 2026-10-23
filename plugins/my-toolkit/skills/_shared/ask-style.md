@@ -1,112 +1,113 @@
-# Ask-style — junior-friendly bilingual `AskUserQuestion`
+# Стиль питань — `AskUserQuestion`, зрозумілий для джуна
 
-> **Reference-only.** Not a skill. Every skill that calls `AskUserQuestion` reads this for the
-> canonical shape of questions and options. The rule: an **option label is the next mechanical
-> step the skill takes**, not just a name; the **description explains, in plain words, what will
-> happen** — written so a first-year junior can pick correctly without a senior beside them.
+> **Лише довідка.** Це не скіл. Кожен скіл, що викликає `AskUserQuestion`, читає цей файл, щоб
+> взяти канонічну форму питань і опцій. Правило: **label опції — це наступний механічний крок
+> скіла**, а не просто назва; **description простими словами пояснює, що станеться** — так, щоб
+> джун першого року міг правильно обрати без сеньйора поруч.
 
-> **Volume vs. style.** How **many** questions a Q&A skill asks scales with the interview-depth dial
-> (easy asks few, hard asks all — see [`interview-depth.md`](./interview-depth.md)). The **per-question
-> explanatory rule below is unchanged at every depth** — even a single easy-level question is glossed
-> and explained in full. Depth tunes the count; it never licenses a dry question.
+> **Кількість vs стиль.** Скільки питань ставить скіл, залежить від регулятора глибини (easy питає
+> мало, hard — усе; див. «Регулятор глибини» в [`../interview/SKILL.md`](../interview/SKILL.md)).
+> **Правило пояснення для кожного питання нижче однакове на будь-якій глибині** — навіть єдине
+> питання на easy пояснюється повністю. Глибина змінює кількість, але ніколи не дозволяє сухих питань.
 
-## The one rule that matters most
+## Головне правило
 
-**Never ask dryly.** The most common failure is a terse, jargon-dense question — a few words plus acronyms, no context — that forces the user to already know the project to answer. Fix it two ways, every time:
+**Ніколи не питай сухо.** Найчастіша помилка — коротке питання, напхане жаргоном: кілька слів плюс абревіатури, без контексту, і щоб відповісти, треба вже знати проєкт. Виправляй це двома способами, щоразу:
 
-1. **Gloss every technical term inline, on first use** — the plain meaning in parentheses, right there. Not «order by RICE» but «order by RICE — a quick score, Reach × Impact × Confidence ÷ Effort, where higher = more value per unit of work». Not «forces a worktree» but «forces a worktree — a separate working copy of the repo so two agents don't edit the same files». The reader should never have to look a term up to choose.
-2. **Spend the words on the WHY and the trade-off**, not the WHAT. A short label is fine; the *description* is where you explain — in plain language — what happens, what you gain and lose, and the hidden catch.
+1. **Пояснюй кожен технічний термін прямо в тексті, при першій згадці** — просте значення в дужках, одразу там. Не «впорядкувати за RICE», а «впорядкувати за RICE — швидкою оцінкою Охоплення × Вплив × Впевненість ÷ Зусилля, де більше = більше цінності на одиницю роботи». Не «примусово worktree», а «примусово worktree — окрема робоча копія репо, щоб два агенти не редагували ті самі файли». Читачеві ніколи не треба гуглити термін, щоб обрати.
+2. **Витрачай слова на ЧОМУ і на компроміс**, а не на ЩО. Короткий label — нормально; пояснюєш у *description*: простою мовою, що станеться, що отримаєш і що втратиш, і де прихована пастка.
 
-If a question reads like a config dump or a spec excerpt, it's wrong. Write it as if explaining the choice to a capable colleague who just joined and doesn't know your acronyms yet. **More explanation always beats less here** — a long, clear description is a feature, not bloat.
+Якщо питання читається як дамп конфігу чи уривок специфікації — воно неправильне. Пиши так, ніби пояснюєш вибір здібному колезі, який щойно прийшов і ще не знає ваших абревіатур. **Більше пояснення тут завжди краще за менше** — довгий зрозумілий description — це перевага, а не роздутість.
 
-## Shape
+## Форма
 
-- **`question`** — 3–4 sentences in three blocks:
-  - **CONTEXT** — why this decision, what scenario to picture, what exactly we're deciding (one sentence with a concrete example).
-  - **WHY IT MATTERS** — which quality goal / NFR / PRD vector it touches; reversibility (irreversible? multi-module? affects performance / security / UX?); the main trade-off in play.
-  - **READ OPTIONS** — a nudge to read the descriptions before choosing.
-- **Each option**:
-  - `label` — 1–5 words, **action form** = the next mechanical step: «Прийняти», «Виправити», «Винести у відкрите питання», «Викинути», «Зафіксувати як ADR». Add «(Recommended)» to the first option when you recommend it.
-  - `description` — 3–5 sentences with four mandatory elements (below).
+- **`question`** — 3–4 речення у трьох блоках:
+  - **КОНТЕКСТ** — чому це рішення, який сценарій уявити, що саме ми вирішуємо (одне речення з конкретним прикладом).
+  - **ЧОМУ ВАЖЛИВО** — якої цілі якості / NFR / напряму PRD це стосується; чи можна відкотити (незворотне? зачіпає кілька модулів? впливає на продуктивність / безпеку / UX?); головний компроміс.
+  - **ПРОЧИТАЙ ОПЦІЇ** — підштовхни прочитати descriptions перед вибором.
+- **Кожна опція**:
+  - `label` — 1–5 слів, **у формі дії** = наступний механічний крок: «Прийняти», «Виправити», «Винести у відкрите питання», «Викинути», «Зафіксувати як ADR». Додай «(Recommended)» до першої опції, якщо рекомендуєш її.
+  - `description` — 3–5 речень з чотирма обов'язковими елементами (нижче).
 
-## The four mandatory elements of a `description`
+## Чотири обов'язкові елементи `description`
 
-1. **What technically happens** — concrete names: tables / endpoints / files / ADR numbers. Not «modify the API» but «add field `is_active BOOLEAN` to table `members` and a new route in the module's handler».
-2. **What you gain / what you lose** — the trade-off in plain words, **every technical term glossed**:
-   - not «backfill migration» → «a script that walks every existing row and fills the new field; while it runs the rows are read-locked for writes»
-   - not «cursor pagination» → «the client sends the last id it saw so the next page starts after it; avoids `OFFSET`, which slows down on large pages»
-   - not «GIN index» → «a special index type that lets you search inside JSON columns, but takes 3–5× more space and writes slower»
-3. **The skill's next mechanical step** — «I spawn ADR-NNNN titled X, add a row to the §9 ADR table, the schema is locked for the data-model stage».
-4. **Hidden trade-off** — if there's a condition under which the choice breaks («only works if Redis is already in your stack», «in 6 months you'll need downtime for a backfill», «existing users have to re-login»), state it **right in the description**, not in a follow-up. A junior won't see that trigger on their own.
+1. **Що станеться технічно** — конкретні назви: таблиці / ендпоінти / файли / номери ADR. Не «змінити API», а «додати поле `is_active BOOLEAN` у таблицю `members` і новий маршрут в обробнику модуля».
+2. **Що отримаєш / що втратиш** — компроміс простими словами, **кожен технічний термін пояснено**:
+   - не «backfill migration» → «скрипт, який проходить по кожному наявному рядку і заповнює нове поле; поки він працює, рядки заблоковані для запису»
+   - не «cursor pagination» → «клієнт надсилає останній id, який бачив, і наступна сторінка починається після нього; так ми уникаємо `OFFSET`, який гальмує на великих сторінках»
+   - не «GIN index» → «спеціальний тип індексу для пошуку всередині JSON-колонок, але займає в 3–5× більше місця і сповільнює запис»
+3. **Наступний механічний крок скіла** — «створюю ADR-NNNN з назвою X, додаю рядок у таблицю ADR у §9, схема фіксується для етапу data-model».
+4. **Прихований компроміс** — якщо є умова, за якої вибір ламається («працює, лише якщо Redis уже є у вашому стеку», «через 6 місяців знадобиться простій для backfill», «наявним користувачам доведеться перелогінитися»), назви її **прямо в description**, а не в наступному питанні. Джун сам цього тригера не побачить.
 
-## Language
+## Мова
 
-- **Ukrainian throughout** — labels + descriptions. Technical identifiers stay in their original form (ADR, JSONB, JWT, UUID, FK, OpenAPI) — they are names. The *actions* are Ukrainian («Прийняти», «Відредагувати», «Винести у §11 OQ», «Видалити»).
-- Glossary roles and domain-invariant **names** (natural-language phrases like «no published lessons») are allowed — they are business terms.
+- **Українська всюди** — labels і descriptions. Технічні ідентифікатори лишаються в оригінальній формі (ADR, JSONB, JWT, UUID, FK, OpenAPI) — це назви. *Дії* — українською («Прийняти», «Відредагувати», «Винести у §11 OQ», «Видалити»).
+- Назви ролей з глосарію і доменних інваріантів (фрази природною мовою на кшталт «немає опублікованих уроків») дозволені — це бізнес-терміни.
 
-## Forbidden
+## Заборонено
 
-- Terse English labels («Approve», «Edit», «Drop», «Reword»).
-- One-line descriptions.
-- Technical terms without a gloss (UNION, backfill, GIN, cursor, idempotent, transactional…).
-- Trade-offs hidden in a follow-up («if you pick this I'll later ask about X, which has complexity Y»).
+- Стислі англійські labels («Approve», «Edit», «Drop», «Reword»).
+- Однорядкові descriptions.
+- Технічні терміни без пояснення (UNION, backfill, GIN, cursor, idempotent, transactional…).
+- Компроміси, сховані в наступне питання («якщо обереш це, я потім спитаю про X, де є складність Y»).
 
-## Counter-example (deprecated) vs correct
+## Антиприклад (застаріле) vs правильно
 
 ```
-# DON'T — opaque next step, no gloss
+# ТАК НЕ МОЖНА — незрозумілий наступний крок, жодного пояснення
 - label: "Approve"
   description: "Apply decision."
 
-# DO — action-form label, description names the concrete step + glossed trade-off
-- label: "Прийняти JSONB-колонку (→ spawn ADR-0002)"
-  description: "Одна колонка `body` типу jsonb зберігає весь масив блоків як JSON. ПЛЮСИ: редагування уроку одним UPDATE; новий тип блоку не потребує schema-migration. МІНУСИ: валідація блоків лягає на app-layer (БД не знає типів); пошук всередині body потребує GIN-індексу (спеціальний індекс Postgres для пошуку в JSON — у 3–5× більше місця, повільніший запис). НАСЛІДОК: спавню ADR-0002 з 3 розглянутими варіантами, додаю рядок у §9, схема фіксується для stage data-model."
+# ТАК ПРАВИЛЬНО — label у формі дії, description називає конкретний крок + пояснений компроміс
+- label: "Прийняти JSONB-колонку (→ створити ADR-0002)"
+  description: "Одна колонка `body` типу jsonb зберігає весь масив блоків як JSON. ПЛЮСИ: редагування уроку одним UPDATE; новий тип блоку не потребує міграції схеми. МІНУСИ: валідація блоків лягає на рівень застосунку (БД не знає типів); пошук всередині body потребує GIN-індексу (спеціальний індекс Postgres для пошуку в JSON — у 3–5× більше місця, повільніший запис). НАСЛІДОК: створюю ADR-0002 з 3 розглянутими варіантами, додаю рядок у §9, схема фіксується для етапу data-model."
 ```
 
-## The 4-state actions, phrased this way (canonical set)
+## Чотири стани дій, сформульовані так (канонічний набір)
 
 ```
 - label: "Прийняти як є"
-  description: "Лишаю рішення дослівно, запускаю наступну перевірку (gate, якщо є для цієї секції)."
+  description: "Лишаю рішення дослівно, запускаю наступну перевірку (gate, якщо він є для цієї секції)."
 - label: "Виправити"
-  description: "Ти даєш нове формулювання/значення; я регенерую рішення під нову умову і питаю ще раз (один раунд — друга відповідь фінальна)."
+  description: "Ти даєш нове формулювання/значення; я перегенерую рішення під нову умову і питаю ще раз (один раунд — друга відповідь фінальна)."
 - label: "Винести у відкрите питання"
-  description: "Прибираю рішення з секції і додаю рядок у таблицю Open-Questions з owner+due (питаю наступним кроком). Без обох — рішення стає Drop."
+  description: "Прибираю рішення з секції і додаю рядок у таблицю відкритих питань з відповідальним і терміном (питаю наступним кроком). Без обох — рішення стає «Викинути»."
 - label: "Викинути"
-  description: "Прибираю рішення. Якщо воно обов'язкове — переформулюю опції і питаю ще раз; якщо опціональне — лишаю без заміни."
+  description: "Прибираю рішення. Якщо воно обов'язкове — переформулюю опції і питаю ще раз; якщо опційне — лишаю без заміни."
 ```
 
-## Dry → explanatory (worked rewrite)
+## Сухе → пояснювальне (розібраний приклад)
 
 ```
-# TOO DRY (jargon-dense, no context — the failure to avoid):
-Question: "Prioritize Next by RICE or manual?"
+# ЗАНАДТО СУХО (жаргон, без контексту — саме цього треба уникати):
+Question: "Пріоритезувати Next за RICE чи вручну?"
 Options:
   - label: "RICE"
-    description: "RICE score, ordered desc."
-  - label: "Manual"
-    description: "Manual order."
+    description: "RICE score, за спаданням."
+  - label: "Вручну"
+    description: "Ручний порядок."
 
-# EXPLANATORY (context + why + glossed terms — do this):
+# ПОЯСНЮВАЛЬНО (контекст + чому + пояснені терміни — роби так):
 Question:
-  "How should we decide the ORDER of the not-yet-started ideas in the roadmap's «Next» list?
-   This only affects which problem we pick up next — nothing is committed yet, and you can always
-   reorder. The trade-off: a scoring formula is more objective but takes a minute per idea; eyeballing
-   it is faster but drifts with mood. Read both options below."
+  "Як визначити ПОРЯДОК ще не розпочатих ідей у списку «Next» роадмепу?
+   Це впливає лише на те, за яку проблему ми візьмемося наступною — нічого ще не зафіксовано, і
+   порядок завжди можна змінити. Компроміс: формула оцінки об'єктивніша, але забирає хвилину на ідею;
+   «на око» — швидше, але залежить від настрою. Прочитай обидві опції нижче."
 Options:
-  - label: "Score each idea (Recommended)"
-    description: "I rate every Next idea with RICE — a quick score = Reach (how many users it touches) ×
-      Impact (how much it moves the needle, 3 down to 0.25) × Confidence (how sure we are, as a %) ÷
-      Effort (rough person-weeks). It gives one sortable number per idea, so «Next» orders itself by
-      value-per-effort. You can still override any ranking by hand. Costs ~a minute of estimating per idea."
-  - label: "Just order them by hand"
-    description: "No formula — you (or I) drag the ideas into the order that feels right; row position =
-      priority. Faster and fine for a short list, but with many ideas it gets subjective and the order
-      tends to drift over time. You can switch to scoring later if the list grows."
+  - label: "Оцінити кожну ідею (Recommended)"
+    description: "Я оцінюю кожну ідею з Next за RICE — швидкою оцінкою = Охоплення (скільки користувачів
+      зачепить) × Вплив (наскільки зрушить показник, від 3 до 0.25) × Впевненість (наскільки ми певні,
+      у %) ÷ Зусилля (приблизно в людино-тижнях). Виходить одне число на ідею, тож «Next» сам
+      впорядковується за цінністю на одиницю зусиль. Будь-яке місце все одно можна змінити вручну.
+      Коштує приблизно хвилину оцінювання на ідею."
+  - label: "Просто впорядкувати вручну"
+    description: "Без формули — ти (або я) перетягуємо ідеї в порядок, який здається правильним; позиція
+      рядка = пріоритет. Швидше і нормально для короткого списку, але коли ідей багато, порядок стає
+      суб'єктивним і з часом розповзається. На оцінювання можна перейти пізніше, якщо список виросте."
 ```
 
-The dry version is unanswerable without knowing what RICE is; the explanatory version teaches the term in the act of asking and makes the trade-off obvious.
+Суху версію неможливо відповісти, не знаючи, що таке RICE; пояснювальна вчить терміна просто в момент питання і робить компроміс очевидним.
 
-## Why (feedback, 2026-05-23 + reinforced 2026-05-29)
+## Чому (фідбек 2026-05-23, посилено 2026-05-29)
 
-The user is a PM, methodist, or junior dev opening the repo for the first time. Terse English questions give them neither the substance of the decision nor the difference between options. Verbatim (2026-05-23): «Треба щоб пояснення були ще більш зрозумілими для людей котрі буквально джуни в розробці». Reinforced (2026-05-29): «при опитуваннях треба більш explanatory запитання і варіанти відповідей, бо зараз клод доволі сухо опитує і багато термінів на короткий текст» — i.e. the dryness + term-density was still happening, so this file now leads with the "never ask dryly / gloss every term" rule above.
+Користувач — PM, методист або джун, який уперше відкриває репо. Короткі англомовні питання не дають йому ні суті рішення, ні різниці між опціями. Дослівно (2026-05-23): «Треба щоб пояснення були ще більш зрозумілими для людей котрі буквально джуни в розробці». Посилено (2026-05-29): «при опитуваннях треба більш explanatory запитання і варіанти відповідей, бо зараз клод доволі сухо опитує і багато термінів на короткий текст» — тобто сухість і перевантаження термінами все ще траплялися, тому файл тепер починається з правила «ніколи не питай сухо / пояснюй кожен термін».
