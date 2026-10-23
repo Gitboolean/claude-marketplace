@@ -1,0 +1,13 @@
+{
+  "name": "my-toolkit",
+  "version": "0.1.0",
+  "description": "Anton's personal Claude Code toolkit: my own skills, commands and agents.",
+  "author": {
+    "name": "Anton Pohorielov",
+    "url": "https://github.com/Gitboolean"
+  },
+  "homepage": "https://github.com/Gitboolean/claude-marketplace",
+  "repository": "https://github.com/Gitboolean/claude-marketplace",
+  "license": "MIT",
+  "keywords": ["personal", "toolkit"]
+}
