@@ -1,6 +1,12 @@
 ---
 name: ba-discovery
-description: Mentor a Business Analyst through an initial discovery interview with a stakeholder, one topic at a time, challenging vague answers, and produce a Discovery Summary (Project Charter draft). Use when the user shares a ticket/request and wants to prepare or run a needs-assessment interview. Triggers: "discovery interview", "інтерв'ю зі стейкхолдером", "розбір заявки", "needs assessment", "/baiar:ba-discovery".
+description: >-
+  Mentor a Business Analyst through an initial discovery interview with a
+  stakeholder, one topic at a time, challenging vague answers, and produce a
+  Discovery Summary (Project Charter draft). Use when the user shares a
+  ticket/request and wants to prepare or run a needs-assessment interview.
+  Triggers: "discovery interview", "інтерв'ю зі стейкхолдером", "розбір заявки",
+  "needs assessment", "/baiar:ba-discovery".
 ---
 
 # Role

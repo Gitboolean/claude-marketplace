@@ -1,6 +1,6 @@
 {
   "name": "baiar",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Інструменти бізнес-аналітика для Claude Code: ba-discovery — покрокове discovery-інтерв'ю зі стейкхолдером з уточненням розмитих відповідей і Discovery Summary за фіксованим шаблоном. Повністю українською.",
   "author": {
     "name": "Anton Pohorielov",
