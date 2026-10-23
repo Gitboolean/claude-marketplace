@@ -1,40 +1,39 @@
 ---
 status: Living
-updated_at: "<today YYYY-MM-DD>"
+updated_at: "<сьогодні YYYY-MM-DD>"
 ---
 
-# Domain Context — <slug or repo>
+# Доменний контекст — <slug або репо>
 
 <!--
-CONTEXT.md is the domain glossary — not a PRD and not a scratch pad. NO implementation
-detail here (no datastore/broker/framework names, no API contracts) — only domain words
-and the boundaries between them. Implementation choices live in the SAD and ADRs;
-behaviour lives in PRD.md.
+CONTEXT.md — це доменний глосарій, а не PRD і не чернетка. Тут НЕМАЄ деталей реалізації
+(жодних назв сховищ / брокерів / фреймворків, жодних API-контрактів) — лише доменні слова
+і межі між ними. Рішення про реалізацію живуть у SAD і ADR; поведінка — у PRD.md.
 
-Multi-context repos: each bounded context has its own CONTEXT.md at its root path
-(registered in CONTEXT-MAP.md). System-wide terms that span all contexts live in the
-repo-root CONTEXT.md. Never duplicate a term across files — pick one owner.
+Репо з кількома контекстами: кожен bounded context має свій CONTEXT.md у своєму корені
+(зареєстрований у CONTEXT-MAP.md). Терміни, спільні для всіх контекстів, живуть
+у кореневому CONTEXT.md. Не дублюй термін у кількох файлах — обери одного власника.
 
-Terms get fixed inline, the moment they surface in an interview / PRD / review — never
-batched «I'll consolidate later». Empty H2 → prune before commit; keep only the sections
-that carry real content. ## Glossary is mandatory; the other two are optional.
+Терміни фіксуються одразу, щойно з'являються в інтерв'ю / PRD / рев'ю — ніколи не
+«зберу потім». Порожній H2 → видалити перед комітом; лишай тільки секції з реальним
+змістом. ## Глосарій обов'язковий; дві інші секції — за потреби.
 -->
 
-## Glossary
+## Глосарій
 
-<!-- One line per term: name · one-sentence canonical definition · one-sentence boundary
-     (what it is NOT / the concept it gets confused with). Alphabetical once there are a few. -->
-- <term> — <one-sentence definition>. NOT <concept it's confused with + how it differs>.
+<!-- Один рядок на термін: назва · канонічне визначення одним реченням · межа одним реченням
+     (чим він НЕ є / з яким поняттям його плутають). Коли термінів кілька — за алфавітом. -->
+- <термін> — <визначення одним реченням>. НЕ <поняття, з яким плутають + чим відрізняється>.
 
-## Invariants
+## Інваріанти
 
-<!-- Domain rules that hold across the whole feature/codebase — phrased «X always must / can
-     never». These are rules ABOVE any single acceptance criterion, not PRD AC. Prune the
-     section if there are none. -->
-- <invariant in the form «X always must / can never»>
+<!-- Доменні правила, що діють для всієї фічі / кодової бази — у формі «X завжди має /
+     ніколи не може». Це правила НАД окремими критеріями приймання, а не AC з PRD.
+     Якщо їх немає — видали секцію. -->
+- <інваріант у формі «X завжди має / ніколи не може»>
 
-## Out of scope
+## Поза скоупом
 
-<!-- Concepts the author explicitly placed outside this domain, with a one-line reason — so
-     nobody re-litigates them in six months. Prune the section if there are none. -->
-- <out-of-scope concept · reason it's excluded>
+<!-- Поняття, які автор свідомо виніс за межі цього домену, з причиною в один рядок — щоб
+     через пів року ніхто не сперечався про них заново. Якщо їх немає — видали секцію. -->
+- <поняття поза скоупом · чому виключено>

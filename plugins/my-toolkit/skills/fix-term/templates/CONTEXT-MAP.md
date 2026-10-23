@@ -3,27 +3,27 @@ status: Living
 updated_at: "<YYYY-MM-DD>"
 ---
 
-# Context Map
+# Карта контекстів
 
 <!--
-CONTEXT-MAP.md is needed ONLY when the repo has > 1 bounded context.
-Single-context repo (default) — use CONTEXT.md at the root; either skip this file
-or leave it as a reminder with an empty table row.
+CONTEXT-MAP.md потрібен ЛИШЕ тоді, коли в репо більше одного bounded context.
+Репо з одним контекстом (за замовчуванням) — використовуй CONTEXT.md у корені; цей файл
+або не створюй, або лиши як нагадування з порожнім рядком таблиці.
 
-Multi-context split is a separate decision (usually stage 04 — architecture brief
-or a dedicated ADR "Split into ordering / billing contexts"). Don't split prematurely.
+Розбиття на кілька контекстів — окреме рішення (зазвичай етап 04 — architecture brief
+або окремий ADR «Розділити на контексти ordering / billing»). Не розбивай передчасно.
 -->
 
-| Context | Path | Description |
-|---------|------|-------------|
-| <name>  | <src/...> | <1-line scope> |
+| Контекст | Шлях | Опис |
+|----------|------|------|
+| <назва>  | <src/...> | <скоуп в 1 рядок> |
 
 <!--
-Example multi-context layout (uncomment when actually splitting):
+Приклад розкладки з кількома контекстами (розкоментуй, коли справді розбиваєш):
 
-| ordering | src/ordering/ | Order lifecycle, cart, checkout. Owns Order, LineItem. |
-| billing  | src/billing/  | Invoices, payments, refunds. Owns Invoice, Payment.    |
+| ordering | src/ordering/ | Життєвий цикл замовлення, кошик, оформлення. Володіє Order, LineItem. |
+| billing  | src/billing/  | Рахунки, платежі, повернення. Володіє Invoice, Payment.               |
 
-Each context has its own CONTEXT.md and docs/adr/ at its own root.
-System-wide ADRs (e.g. "shared event-bus") live in the root docs/adr/.
+Кожен контекст має свій CONTEXT.md і docs/adr/ у власному корені.
+ADR рівня всієї системи (напр. «спільна шина подій») живуть у кореневому docs/adr/.
 -->

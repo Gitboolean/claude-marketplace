@@ -1,12 +1,14 @@
 ---
 name: devils-advocate
 description: >
-  Clean-context adversary for SDLC. Two modes, named by the dispatch prompt. (A) Ambiguity hunt over a
-  written PRD — used by clarify-prd to find where two competent engineers would reasonably build different
-  things (vague terms, unmeasured NFRs, under-specified ACs, conflicts). (B) Failure-mode hunt over a
-  raw idea + candidate approaches — used by write-prd's ideation pass (medium/hard) to find how it fails
-  in production (attack vectors with monitoring/churn/incident signals). Read-only; reads its inputs
-  itself; emits cited findings. It surfaces problems, it does not resolve them.
+  Опонент у чистому контексті. Два режими, режим називає промпт виклику.
+  (A) Пошук неоднозначностей у написаному PRD — для clarify-prd: де два компетентні
+  інженери збудували б різне (розмиті терміни, NFR без мір, недовизначені AC,
+  суперечності). (B) Пошук сценаріїв провалу для сирої ідеї та кандидатних підходів —
+  для interview (фаза 8) і ідеації write-prd на глибині medium/hard: як це впаде
+  в продакшені (вектори атаки з сигналами в моніторингу, відтоку клієнтів,
+  інцидентах). Лише читає; сам читає вхідні дані; видає знахідки з посиланнями.
+  Показує проблеми, але не розв'язує їх.
 model: opus
 effort: high
 color: red

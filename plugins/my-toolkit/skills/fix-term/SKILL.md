@@ -1,21 +1,19 @@
 ---
 name: fix-term
 description: >-
-  Use to capture or update domain terms in CONTEXT.md before their meaning
-  drifts — whenever a fuzzy word shows up in an interview, PRD, or review and
-  you want one canonical definition plus a NOT-reference so a homonym can't
-  bite you in six months.
-  Triggers on "add term {X}", "what is {X} in our domain", "add to CONTEXT",
-  "fix the glossary", "define {X}", "/my-toolkit:fix-term {term}", "fix term {X}",
-  "додай термін", "онови глосарій", "що означає {X}".
-  Lazy-bootstraps docs/features/{slug}/CONTEXT.md (or repo-root CONTEXT.md;
-  multi-context repos also get CONTEXT-MAP.md updated) from a template, checks
-  for a conflicting existing entry, asks for a one-sentence definition + the
-  concept it's confused with, and appends one line to ## Glossary. Skip generic
-  tech words (HTTP, queue, cache) — those are not domain terms.
-  Output: created/edited CONTEXT.md (+ CONTEXT-MAP.md updated when multi-context).
-  Runs anytime, no input gate; write-prd and architecture-design read its
-  ## Glossary as the canonical source of role and domain-term names.
+  Фіксує або оновлює доменні терміни в CONTEXT.md, поки їхній зміст не поплив:
+  щойно в інтерв'ю, PRD чи рев'ю з'являється розмите слово, скіл записує одне
+  канонічне визначення і НЕ-посилання (з чим термін плутають), щоб омонім не
+  вкусив через пів року. Якщо CONTEXT.md немає, створює його з шаблону
+  (docs/features/{slug}/CONTEXT.md або кореневий; у репо з кількома контекстами
+  оновлює й CONTEXT-MAP.md), перевіряє конфлікт з наявним записом, питає визначення
+  одним реченням і поняття-двійник, додає один рядок у ## Глосарій. Загальні
+  технічні слова (HTTP, черга, кеш) пропускає — це не доменні терміни. Запускається
+  будь-коли, без вхідних умов; write-prd і architecture-design беруть ## Глосарій
+  як канонічне джерело назв ролей і термінів. Тригери: «додай термін», «онови
+  глосарій», «що означає {X}», «визнач {X}», «/my-toolkit:fix-term {term}», а також
+  англійською: "add term {X}", "fix term {X}", "what is {X} in our domain",
+  "add to CONTEXT", "fix the glossary", "define {X}".
 triggers:
   - /my-toolkit:fix-term
   - "fix term"
@@ -30,7 +28,7 @@ triggers:
 
 # Skill: fix-term
 
-Lazy utility that fixes the meaning of a domain term in `CONTEXT.md` the moment it first surfaces, so its sense doesn't drift across the pipeline. For each term it captures a one-sentence canonical definition and — when the word is ambiguous — a **NOT-reference** naming the concept it's confused with. Runs anytime, with no upstream gate: a single term mid-interview, or a batch handed over by `write-prd`. The output feeds `write-prd` (role + domain-term names) and `architecture-design` (invariants), which treat `## Glossary` as canonical and override anything that contradicts it.
+Lazy utility that fixes the meaning of a domain term in `CONTEXT.md` the moment it first surfaces, so its sense doesn't drift across the pipeline. For each term it captures a one-sentence canonical definition and — when the word is ambiguous — a **NOT-reference** naming the concept it's confused with. Runs anytime, with no upstream gate: a single term mid-interview, or a batch handed over by `write-prd`. The output feeds `write-prd` (role + domain-term names) and `architecture-design` (invariants), which treat `## Глосарій` as canonical and override anything that contradicts it.
 
 This is a capture utility, not a Socratic stage — it does **not** run the shared Socratic loop or critic. The one shared dependency is question phrasing:
 → [`../_shared/ask-style.md`](../_shared/ask-style.md)
@@ -61,16 +59,16 @@ Whoever drives the conversation — anyone who spots ambiguity. Tech Lead approv
 5. **Ask the canonical definition** — one `AskUserQuestion`: «Define `<term>` in this domain, in one sentence». Offer interview/brainstorm phrasings as options when available; otherwise free text. Follow the explanatory style in [`../_shared/ask-style.md`](../_shared/ask-style.md) — gloss every technical term inline, explain why the definition matters.
 6. **Ask the NOT-reference** — one `AskUserQuestion`: «Which concept does `<term>` get confused with, so a future reader doesn't mix them up?». No plausible homonym → `None`.
 7. **Compose one line.** `- <term> — <one-sentence definition>. NOT <confused concept + how it differs>.` — or, when step 6 = None, `- <term> — <definition>.`
-8. **Append under `## Glossary`.** Read the file, insert the line in `## Glossary` (alphabetical if the section is already sorted, else at the end). Never rewrite existing entries.
-9. **Prune empty H2s.** On a fresh bootstrap, delete `## Invariants` / `## Out of scope` if they hold no real content — only `## Glossary` is mandatory. (A genuine invariant or out-of-scope note goes in its section, never as implementation detail.)
+8. **Append under `## Глосарій`.** Read the file, insert the line in `## Глосарій` (alphabetical if the section is already sorted, else at the end). Never rewrite existing entries. Старі файли, створені плагіном `sdlc`, мають англійський заголовок `## Glossary` — тоді пиши туди, заголовок не перейменовуй.
+9. **Prune empty H2s.** On a fresh bootstrap, delete `## Інваріанти` / `## Поза скоупом` if they hold no real content — only `## Глосарій` is mandatory. (A genuine invariant or out-of-scope note goes in its section, never as implementation detail.)
 10. **Stamp + commit + handoff.** Set `updated_at: <today>` in the frontmatter. Propose `context: + <term>` (or `context: + <term>, <term2>` for a batch). May fold into the caller's intake/PRD commit. Then **emit the stage-handoff block** per [`../_shared/handoff.md`](../_shared/handoff.md) (utility variant) — *What I did* + *Review* (`CONTEXT.md`) + *Run next*: resume your backbone stage (e.g. `/sdlc-architecture-design <slug>`); `/clear` optional.
 
 ## Definition of Done
 
-- `<target>` exists and contains `<term>` under `## Glossary` in the «one-sentence canonical + optional NOT-reference» format.
+- `<target>` exists and contains `<term>` under `## Глосарій` in the «one-sentence canonical + optional NOT-reference» format.
 - Any conflict with an existing entry is resolved (reported as duplicate, or disambiguated into distinct names).
 - Generic tech words are refused, not stored.
-- Empty H2 sections are pruned on bootstrap; `## Glossary` remains.
+- Empty H2 sections are pruned on bootstrap; `## Глосарій` remains.
 - Multi-context: `CONTEXT-MAP.md` has a row for the context; the term lands in the correct bounded-context `CONTEXT.md`.
 - `updated_at` reflects today; a commit is proposed.
 
@@ -95,4 +93,4 @@ Whoever drives the conversation — anyone who spots ambiguity. Tech Lead approv
 ## Example invocation
 
 > **User:** «add term tenant for rate-limiting-per-user»
-> **Skill:** `test -f CONTEXT-MAP.md` → not exists. Single-context. `<slug>` = `rate-limiting-per-user` → target `docs/features/rate-limiting-per-user/CONTEXT.md`. Generic filter: `tenant` is domain → continue. File missing → copy template. `grep "^- tenant"` → not found. Definition Q → «a billable customer organisation owning 1+ users». NOT-reference Q → «NOT user — a user is one person inside a tenant». Compose `- tenant — a billable customer organisation owning 1+ users. NOT user (a user is one person inside a tenant).` → append under `## Glossary` → prune empty `## Invariants`/`## Out of scope` → `updated_at: 2026-05-29` → commit `context: + tenant`. Emit handoff block (utility variant): *What I did* — appended `tenant` to `docs/features/rate-limiting-per-user/CONTEXT.md`; *Run next* — resume `/sdlc-architecture-design rate-limiting-per-user`.
+> **Skill:** `test -f CONTEXT-MAP.md` → not exists. Single-context. `<slug>` = `rate-limiting-per-user` → target `docs/features/rate-limiting-per-user/CONTEXT.md`. Generic filter: `tenant` is domain → continue. File missing → copy template. `grep "^- tenant"` → not found. Definition Q → «a billable customer organisation owning 1+ users». NOT-reference Q → «NOT user — a user is one person inside a tenant». Compose `- tenant — a billable customer organisation owning 1+ users. NOT user (a user is one person inside a tenant).` → append under `## Глосарій` → prune empty `## Інваріанти`/`## Поза скоупом` → `updated_at: 2026-05-29` → commit `context: + tenant`. Emit handoff block (utility variant): *What I did* — appended `tenant` to `docs/features/rate-limiting-per-user/CONTEXT.md`; *Run next* — resume `/sdlc-architecture-design rate-limiting-per-user`.

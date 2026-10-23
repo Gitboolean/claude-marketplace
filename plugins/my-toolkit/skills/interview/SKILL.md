@@ -1,22 +1,19 @@
 ---
 name: interview
 description: >
-  Consolidated 14-phase ideation skill — Socratic interview, autonomous
-  competitive research, 3 strategic approaches via parallel sub-agents,
-  multi-perspective review (Engineer/Executive/UX), devil's advocate,
-  Claude-proposed RICE/Feasibility. Single entry-point for ideation phase.
-  Produces idea-brief.md (15 sections, ≤5 pages). Triggers on "raw idea",
-  "capture an idea", "interview a feature X", "brief for X", "new feature X",
-  "idea brief", "intake feature X", "start new feature", "ideation for {slug}",
-  "/my-toolkit:interview {slug}". Also runs project-level in an empty folder
-  (greenfield mode): "new project idea", "greenfield brief", "інтерв'ю нового
-  проєкту", "/my-toolkit:interview" without slug outside a repo — writes docs/idea-brief.md
-  for the whole product. Has a depth regulator (easy / medium / hard; easy =
-  3-4 checkpoints for a quick pass). Replaces the prior intake + brainstorm + interview
-  trio. ADRs are no longer part of this skill — they are spawned inline by
-  the architecture-design skill at gate 04-05. Not to be confused with the global `interview` skill
-  (stress-testing ideas) — this one is bound to SDLC ideation phase and
-  writes an artifact into docs/features/.
+  Ідеація нової фічі або продукту в 14 фазах: сократівське інтерв'ю, самостійне
+  дослідження конкурентів, три стратегічні підходи від окремих сабагентів, погляд
+  трьох ролей (інженер / бізнес / UX), devil's advocate і RICE та здійсненність,
+  які пропонує Claude. Єдина точка входу в етап ідеації. Результат — idea-brief.md
+  (15 секцій, до 5 сторінок). Регулятор глибини: easy / medium / hard (easy — 3–4
+  чекпойнти для швидкого проходу). У порожній теці працює в режимі greenfield і пише
+  docs/idea-brief.md для всього продукту. ADR тут не створюються — це робота
+  architecture-design на етапі 04–05. Тригери: «сира ідея», «зафіксуй ідею»,
+  «інтерв'ю фічі X», «бриф для X», «нова фіча X», «бриф ідеї», «ідеація для {slug}»,
+  «інтерв'ю нового проєкту», «бриф нового продукту», «/my-toolkit:interview {slug}»,
+  а також англійською: "raw idea", "capture an idea", "interview a feature X",
+  "brief for X", "new feature X", "idea brief", "start new feature",
+  "ideation for {slug}", "new project idea", "greenfield brief".
 ---
 
 # Skill: interview (SDLC ideation phase — single entry-point)
@@ -110,7 +107,7 @@ Easy не скасовує чесність чекпойнтів: його 3–4
 ### 0. Pre-plan setup (read-only)
 
 - **Read** `./templates/idea-brief.md` — завантажити skeleton у session memory (NO copy yet).
-- **Read** `CONTEXT.md` (root and `docs/features/<slug>/` if exists) — завантажити `## Glossary` у session state.
+- **Read** `CONTEXT.md` (root and `docs/features/<slug>/` if exists) — завантажити `## Глосарій` у session state.
 - **Verify** `docs/features/<slug>/idea-brief.md` does not exist with `status: Confirmed` (else: skip, update existing).
 - **NO Write / Edit / mkdir.** Setup стає одним з steps плану, який буде виконано у Phase 12.
 
@@ -233,7 +230,7 @@ AskUserQuestion для user confirm: `Accept recommendation` / `Pick different a
 1. Create directory `docs/features/<slug>/` (if absent).
 2. Copy template `./templates/idea-brief.md` → `docs/features/<slug>/idea-brief.md`.
 3. Apply pending glossary terms (Phase 3 list) via `my-toolkit:fix-term` to `CONTEXT.md`.
-4. Fill 15 sections + Related + DoD self-check у новому файлі з усього session memory (Phases 1-11).
+4. Fill 15 sections + «Пов'язане» + «Самоперевірка DoD» у новому файлі з усього session memory (Phases 1-11).
 5. Update frontmatter: `status: Confirmed`, `value_score.{rice,state,confirmed_at}`, `feasibility_state: confirmed`.
 6. Run Phase 13 self-check (regex, length, citations).
 7. Propose commit + next owner.
@@ -247,7 +244,7 @@ AskUserQuestion для user confirm: `Accept recommendation` / `Pick different a
 - **mkdir** `docs/features/<slug>/` if absent.
 - **Copy** template → `docs/features/<slug>/idea-brief.md`.
 - **Apply** pending glossary terms (call `my-toolkit:fix-term` for each, якщо що).
-- **Edit/Write** усі секції 1-15 + Related + DoD self-check з session memory. Update frontmatter:
+- **Edit/Write** усі секції 1-15 + «Пов'язане» + «Самоперевірка DoD» з session memory. Update frontmatter:
   - `status: Confirmed`
   - `value_score.rice: <N>`, `value_score.state: confirmed`, `value_score.confirmed_at: <today YYYY-MM-DD>`
   - `feasibility_state: confirmed`
@@ -258,8 +255,8 @@ Parked approaches (2 non-recommended з §5) — у §14 з reason + revisit tri
 ### 13. Self-check vs DoD
 
 Run all checks (Read + grep over the file just written):
-- **15 sections present.** Все 1-15 + Related + DoD self-check filled.
-- **No anti-pattern terms у body.** Regex check (excluding DoD self-check meta-line): `\b(Postgres|Redis|Kafka|MySQL|SM-2|FSRS|Leitner|SQLAlchemy|gorm|JSONB)\b` + `p99`. **Word-boundary важливий**: `chi` як substring у «architecture» — false positive; додати `\b`.
+- **15 sections present.** Все 1-15 + «Пов'язане» + «Самоперевірка DoD» filled.
+- **No anti-pattern terms у body.** Regex check (excluding рядок «Немає заборонених термінів» у «Самоперевірка DoD»): `\b(Postgres|Redis|Kafka|MySQL|SM-2|FSRS|Leitner|SQLAlchemy|gorm|JSONB)\b` + `p99`. **Word-boundary важливий**: `chi` як substring у «architecture» — false positive; додати `\b`.
 - **Length ≤ 5 pages** (~2200 words ±10%). If over — compress §5 Approaches paragraphs and §6 Competitive table.
 - **Rationale citations.** §13 Recommendation cites §6 (1 gap) + §8 (1 cell) + §11 (RICE) + §12 (Feasibility).
 
@@ -311,7 +308,7 @@ ADR (`sdlc:architecture-design`) НЕ викликається на gate 1 — �
 - **Skip Feasibility repo scan.** Phase 10 must do `find`/`ls` over feature dirs and cite adjacent shipped features. «Tech: ☑ — we know how» without citation = guess.
 - **Recommendation без rationale citing 4 upstream sections.** Phase 11 rationale MUST cite §6 (competitive gap), §8 (multi-perspective cell), §11 (RICE), §12 (Feasibility). Otherwise it's «I feel like A».
 - **Propose ADR at end of phase 14.** ADR moves to gate 3 (after sad.md (architecture-design)). Gate 1 is pure product — no tech locks-in.
-- **Brainstorm-style transcript dump.** §14 Parked & rejected is structured (table with status / reason / revisit trigger), not raw chat log.
+- **Brainstorm-style transcript dump.** §14 «Відкладені та відхилені підходи» is structured (table with status / reason / revisit trigger), not raw chat log.
 - **Solution-mode prose in §2 Problem.** «We need to add Redis» → wrong section. §2 is the problem only; solutions live у §7 Approaches.
 - **Fabricating user answers under Auto Mode.** `Auto Mode Active` system-reminder каже «work without stopping for clarifying questions» — це стосується pause-to-check моментів, а не in-flow AskUserQuestion checkpoints цього skill. Phases 1, 2, 9, 10, 11 MUST fire real AskUserQuestion-и; генерувати raw idea / Socratic answers / RICE confirms / Feasibility confirms / recommendation accept без user-input = reconstruction artifact, не interview. Якщо AskUserQuestion відкинуто через permission denial — зупинитись і повідомити користувача, не обходити.
 - **Writing files inside planning mode.** Phases 0-11 read-only. Якщо skill стартував у plan mode і ти спробуєш Write/Edit/mkdir раніше ніж ExitPlanMode (Phase 11.5) — permission deny. Тримай весь artifact у session memory до Phase 12.

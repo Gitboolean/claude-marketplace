@@ -1,148 +1,148 @@
 ---
 status: Draft | Confirmed | Frozen
-owner: "<PM name>"
+owner: "<ім'я PM>"
 reviewers: []
 updated_at: "<YYYY-MM-DD>"
-feature_size: <XS|S|M|L|XL>     # set by sdlc:classify-size, not here
+feature_size: <XS|S|M|L|XL>     # визначає sdlc:classify-size, не цей бриф
 stage: "01"
-depth: easy | medium | hard   # interview depth used
-ticket: "<ticket-id>"
+depth: easy | medium | hard   # глибина інтерв'ю, з якою пройшли
+ticket: "<id тікета>"
 value_score:
-  rice: <number>                 # computed by Claude
+  rice: <число>                  # рахує Claude
   state: proposed | confirmed
   confirmed_at: "<YYYY-MM-DD>"
 feasibility_state: proposed | confirmed
 ---
 
-<!-- Stage 01 → see plugins/my-toolkit/skills/interview/SKILL.md -->
-<!-- Why: capture the idea before it's forgotten or retold incorrectly -->
+<!-- Етап 01 → див. plugins/my-toolkit/skills/interview/SKILL.md -->
+<!-- Навіщо: зафіксувати ідею, поки її не забули або не переказали неправильно -->
 
-<!-- Anti-pattern enforcement (Claude self-check, не user-visible):
-     Заборонені терміни у тілі: Postgres, Redis, Kafka, конкретні library names,
-     SM-2/FSRS/Leitner, схеми таблиць, API endpoints, latency targets, SLOs.
-     Це PRODUCT brief. Tech живе у SPEC §6 + architecture-brief + ADR (gate 3+). -->
+<!-- Контроль антипатернів (самоперевірка Claude, користувач цього не бачить):
+     У тілі заборонені: Postgres, Redis, Kafka, назви конкретних бібліотек,
+     SM-2/FSRS/Leitner, схеми таблиць, API-ендпоінти, цілі по latency, SLO.
+     Це ПРОДУКТОВИЙ бриф. Технічні рішення живуть у SPEC §6 + architecture-brief + ADR (етап 3+). -->
 
-# Idea Brief — <feature name>
+# Бриф ідеї — <назва фічі>
 
-## 1. Raw idea
-<1 paragraph verbatim from user, phase 1>
+## 1. Сира ідея
+<1 абзац дослівно від користувача, фаза 1>
 
-## 2. Problem
-<1-3 sentences, facts/numbers>
+## 2. Проблема
+<1–3 речення, факти й цифри>
 
-## 3. Users
-<who suffers, frequency, segments>
+## 3. Користувачі
+<хто страждає, як часто, сегменти>
 
-## 4. Why now
-<trigger: incident/contract/deadline>
+## 4. Чому зараз
+<тригер: інцидент / контракт / дедлайн>
 
-## 5. Out of scope
-- bullet
+## 5. Поза скоупом
+- пункт
 
-## 6. Competitive analysis
-| # | Product · URL | Features | Value per feature (1-5) | Gap |
+## 6. Аналіз конкурентів
+| # | Продукт · URL | Можливості | Цінність кожної можливості (1–5) | Прогалина |
 |---|---|---|---|---|
-| 1 | <name> · <url> | <features> | <ratings> | <gap> |
+| 1 | <назва> · <url> | <можливості> | <оцінки> | <прогалина> |
 
-Footnotes per row: date and search query used.
+Примітка до кожного рядка: дата і пошуковий запит, яким знайдено.
 
-## 7. Strategic approaches
+## 7. Стратегічні підходи
 
-### Approach A — <3-5 word name>
-- **Thesis** (1 sentence, product language)
-- **For whom** (which segment from §3 benefits most)
-- **Outcome metric** (1 KPI: baseline → target)
-- **Key trade-off** (1 line)
-- **Effort signal**: S / M / L
-- **Recommended?** ◯ / ●  (filled in §13)
+### Підхід A — <назва з 3–5 слів>
+- **Теза** (1 речення, продуктовою мовою)
+- **Для кого** (якому сегменту з §3 це найбільше допоможе)
+- **Метрика результату** (1 KPI: зараз → ціль)
+- **Ключовий компроміс** (1 рядок)
+- **Оцінка зусиль**: S / M / L
+- **Рекомендовано?** ◯ / ●  (заповнюється в §13)
 
-### Approach B — ...
-[same structure]
+### Підхід B — ...
+[та сама структура]
 
-### Approach C — ...
-[same structure]
+### Підхід C — ...
+[та сама структура]
 
-## 8. Multi-perspective feedback
+## 8. Погляд з різних ролей
 
-### Engineer
-- 3-5 bullets (concerns / value / risks — abstract, NO library or DB names)
+### Інженер
+- 3–5 пунктів (ризики / цінність / блокери — абстрактно, БЕЗ назв бібліотек чи БД)
 
-### Executive
-- 3-5 bullets
+### Бізнес
+- 3–5 пунктів
 
-### UX-researcher
-- 3-5 bullets
+### UX-дослідник
+- 3–5 пунктів
 
-### Synthesis matrix
-|         | Engineer | Executive | UX |
-|---------|:--------:|:---------:|:--:|
-| App. A  | +        | +         | 0  |
-| App. B  | -        | +         | -  |
-| App. C  | 0        | 0         | +  |
+### Зведена матриця
+|          | Інженер | Бізнес | UX |
+|----------|:-------:|:------:|:--:|
+| Підхід A | +       | +      | 0  |
+| Підхід B | -       | +      | -  |
+| Підхід C | 0       | 0      | +  |
 
-6-word justifications in each cell.
+У кожній клітинці — обґрунтування до 6 слів.
 
-## 9. Trade-offs and edge cases
+## 9. Компроміси та граничні випадки
 
-### Trade-offs per approach
-| Approach | Pros | Cons |
+### Компроміси за підходами
+| Підхід | Плюси | Мінуси |
 |---|---|---|
 | A | ... | ... |
 | B | ... | ... |
 | C | ... | ... |
 
-### Edge cases
-- 5-8 items
+### Граничні випадки
+- 5–8 пунктів
 
-## 10. Risks
-- Top devil's advocate attack vector (from phase 8)
-- Other identified risks
+## 10. Ризики
+- Головний вектор атаки від devil's advocate (з фази 8)
+- Інші виявлені ризики
 
-## 11. RICE — Claude proposed
-- **Reach (R)**: <number> — rationale cites §3 Users
-- **Impact (I)**: <0.25 | 0.5 | 1 | 2 | 3> — rationale cites Executive perspective + Problem severity (§2, §8)
-- **Confidence (C)**: <0.5 | 0.7 | 0.8 | 1.0> — rationale cites count of TBDs / Open questions (§15)
-- **Effort (E)**: <person-weeks> — rationale cites Effort signal from §7
-- **RICE = R × I × C / E = <number>**
-- **State**: proposed | confirmed
+## 11. RICE — пропозиція Claude
+- **Охоплення (R)**: <число> — обґрунтування посилається на §3 Користувачі
+- **Вплив (I)**: <0.25 | 0.5 | 1 | 2 | 3> — обґрунтування посилається на погляд бізнесу і серйозність проблеми (§2, §8)
+- **Впевненість (C)**: <0.5 | 0.7 | 0.8 | 1.0> — обґрунтування посилається на кількість TBD / відкритих питань (§15)
+- **Зусилля (E)**: <людино-тижні> — обґрунтування посилається на оцінку зусиль з §7
+- **RICE = R × I × C / E = <число>**
+- **Стан**: proposed | confirmed
 
-## 12. Feasibility — Claude proposed
+## 12. Здійсненність — пропозиція Claude
 
-- [☑/☐] **Tech**: <rationale — cite adjacent feature from repo scan>
-- [☑/☐] **Skills**: <rationale>
-- [☑/☐] **Time**: <rationale — cite similar past feature shipping time>
-- **State**: proposed | confirmed
+- [☑/☐] **Технології**: <обґрунтування — суміжна фіча, знайдена при скануванні репо>
+- [☑/☐] **Навички**: <обґрунтування>
+- [☑/☐] **Час**: <обґрунтування — скільки часу зайняла схожа фіча в минулому>
+- **Стан**: proposed | confirmed
 
-## 13. Recommendation
-**Selected: Approach <X>** — <3-5 sentence rationale>
+## 13. Рекомендація
+**Обрано: Підхід <X>** — <обґрунтування на 3–5 речень>
 
-Rationale MUST cite:
-- RICE score from §11
-- Feasibility state from §12
-- ≥1 multi-perspective cell from §8
-- ≥1 competitive gap from §6
+Обґрунтування ОБОВ'ЯЗКОВО посилається на:
+- RICE з §11
+- стан здійсненності з §12
+- ≥1 клітинку матриці ролей з §8
+- ≥1 прогалину конкурентів з §6
 
-**Locked-in pointer**: <what this commits us to for write-spec phase>
+**Що ми цим фіксуємо**: <до чого це зобов'язує на етапі специфікації>
 
-## 14. Parked & rejected approaches
-| # | Approach | Status | Reason | Revisit trigger |
+## 14. Відкладені та відхилені підходи
+| # | Підхід | Статус | Причина | Коли повернутися |
 |---|---|:---:|---|---|
-| B | <name> | parked | <reason> | <trigger> |
-| C | <name> | parked | <reason> | <trigger> |
-| - | <name> | rejected | <reason> | - |
+| B | <назва> | відкладено | <причина> | <тригер> |
+| C | <назва> | відкладено | <причина> | <тригер> |
+| - | <назва> | відхилено | <причина> | - |
 
-## 15. Open questions
-- [ ] <question> — owner: <name>, due: <date>
+## 15. Відкриті питання
+- [ ] <питання> — відповідальний: <ім'я>, до: <дата>
 - [ ] ...
 
-## Related
-- Links to CONTEXT.md, ticket, related features
+## Пов'язане
+- Посилання на CONTEXT.md, тікет, пов'язані фічі
 
-## DoD self-check
-- [ ] 15 sections present
-- [ ] No anti-pattern terms (Postgres/Redis/etc.)
-- [ ] Length ≤ 5 pages (~2200 words)
-- [ ] Frontmatter status: Confirmed
-- [ ] RICE confirmed (state: confirmed)
-- [ ] Feasibility confirmed (state: confirmed)
-- [ ] Recommendation present with rationale citing 4 upstream sections (§6, §8, §11, §12)
+## Самоперевірка DoD
+- [ ] Є всі 15 секцій
+- [ ] Немає заборонених термінів (Postgres/Redis тощо)
+- [ ] Обсяг ≤ 5 сторінок (~2200 слів)
+- [ ] У frontmatter status: Confirmed
+- [ ] RICE підтверджено (state: confirmed)
+- [ ] Здійсненність підтверджено (state: confirmed)
+- [ ] Є рекомендація з обґрунтуванням, що посилається на 4 секції (§6, §8, §11, §12)

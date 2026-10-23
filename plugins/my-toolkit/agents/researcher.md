@@ -1,12 +1,14 @@
 ---
 name: researcher
 description: >
-  Clean-context competitive + adjacent-solution researcher for an SDLC feature idea. Use during
-  write-prd's ideation pass (medium/hard depth) to find how the market and adjacent products already
-  solve this problem — so the PRD's recommendation is grounded in what exists, not a guess. Has web
-  access (WebSearch/WebFetch) plus the project knowledge-base; returns one cited table (Product · URL ·
-  Features · Value · Gap), each row footnoted with date + query. Stays product-level — never names a
-  datastore/broker/framework, never invents a competitor to fill the table.
+  Дослідник конкурентів і суміжних рішень для ідеї фічі, працює в чистому контексті.
+  Використовуй на етапі ідеації (interview, фаза 4; write-prd на глибині medium/hard),
+  щоб дізнатися, як ринок і суміжні продукти вже розв'язують цю проблему, — тоді
+  рекомендація спирається на реальність, а не на здогад. Має доступ до вебу
+  (WebSearch/WebFetch) і бази знань проєкту; повертає одну таблицю з джерелами
+  (Продукт · URL · Можливості · Цінність · Прогалина), кожен рядок з приміткою: дата
+  і запит. Лишається на рівні продукту — не називає сховищ / брокерів / фреймворків
+  і не вигадує конкурентів, щоб заповнити таблицю.
 model: sonnet
 effort: medium
 color: orange

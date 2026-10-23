@@ -1,12 +1,14 @@
 ---
 name: strategist
 description: >
-  Clean-context generator of the three strategic approaches for an SDLC feature idea. Use during
-  write-prd's ideation pass (hard depth) to lay out genuinely different ways to solve the problem —
-  Simplicity (shortest path), Differentiation (the moat/wow), Balanced (the trade-off) — so the PRD
-  picks an approach from real options, not the first one that came to mind. Read-only; returns three
-  approaches, each with Name · Thesis · For-whom · Outcome-metric · Key-trade-off · Effort-signal.
-  Stays product-level — no datastore/broker/framework names; that's architecture-design.
+  Генерує три стратегічні підходи до ідеї фічі, працює в чистому контексті.
+  Використовуй на етапі ідеації (interview, фаза 5; write-prd на глибині hard), щоб
+  викласти справді різні способи розв'язати проблему — Простота (найкоротший шлях),
+  Диференціація (перевага / вау-ефект), Баланс (компроміс), — і щоб підхід обирали
+  з реальних варіантів, а не перший, що спав на думку. Лише читає; повертає три
+  підходи, кожен із полями Назва · Теза · Для кого · Метрика результату · Ключовий
+  компроміс · Оцінка зусиль. Лишається на рівні продукту — без назв сховищ /
+  брокерів / фреймворків; це робота architecture-design.
 model: opus
 effort: high
 color: pink

@@ -19,8 +19,8 @@
     {
       "name": "my-toolkit",
       "source": "./plugins/my-toolkit",
-      "description": "Anton's personal Claude Code toolkit, forked from sdlc: interview (ideation → idea-brief.md) with fix-term and the researcher / strategist / analyst / devils-advocate agents.",
-      "version": "0.2.0",
+      "description": "Мій особистий набір для Claude Code на основі sdlc: interview (ідеація → idea-brief.md) з fix-term і агентами researcher / strategist / analyst / devils-advocate. Описи й шаблони українською.",
+      "version": "0.3.0",
       "author": {
         "name": "Anton Pohorielov"
       },
